@@ -1,0 +1,17 @@
+annotations:
+  deprecatedVersion: 7.16.2,8.13.4
+  owner: harmonycloud
+  type: db
+  version: 6.8.22,7.16.3,7.16.2,8.11.3,8.13.4
+apiVersion: v2
+appVersion: 6.8.22
+dependencies:
+- alias: elasticsearch-operator
+  condition: elasticsearch-operator.enabled
+  name: elasticsearch-operator
+  repository: file://./charts/elasticsearch-operator
+  version: 1.11.0
+description: CloudDB Elasticsearch数据库
+name: elasticsearch
+type: application
+version: 1.11.0

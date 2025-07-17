@@ -1,0 +1,37 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareConfiguration
+metadata:
+  name: elasticsearch-kibana-config
+spec:
+  template: |
+    apiVersion: v1
+    data:
+      kibana.yml: |-
+        server.name: kibana
+        server.port: "{{ .Values.port.esKibanaPort }}"
+      {{- if eq .Values.version "6.8" }}
+        elasticsearch.url: http://elasticsearch:{{ .Values.port.esHttpPort }}
+      {{- else }}
+        elasticsearch.hosts: ["http://elasticsearch:{{ .Values.port.esHttpPort }}"]
+      {{- end }}
+      {{- if not (regexMatch "^8\\..*" .Values.version) }}
+        server.host: "0"
+        elasticsearch.username: elastic
+      {{- if .Values.encodePassword }}
+        elasticsearch.password: "{{ (b64dec .Values.encodePassword) | default .Values.elasticPassword }}"
+      {{- else }}
+        elasticsearch.password: {{ .Values.elasticPassword | quote}}
+      {{- end }}
+      {{- else }}
+        server.host: "0.0.0.0"
+        monitoring.ui.ccs.enabled: false
+      {{- end }}
+        server.defaultRoute: /app/monitoring
+        xpack.monitoring.ui.container.elasticsearch.enabled: false
+        i18n.locale: "zh-CN"
+    kind: ConfigMap
+    metadata:
+      labels:
+        clusterName: {{ .Globe.Name }}
+      name: "{{ .Globe.Name }}-kibana-config"
+

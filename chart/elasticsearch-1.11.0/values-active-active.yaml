@@ -1,0 +1,79 @@
+tolerations:
+  - effect: NoSchedule
+    key: harm.cn/type
+    value: active-active
+  - effect: NoSchedule
+    key: harm.cn/system
+
+#broker反亲和zoneC节点
+nodeAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: NotIn
+            values:
+              - zoneC
+
+#开启双活 固定配置
+activeActive:
+  enable: true
+
+#双活调度配置 固定配置
+podAntiAffinityTopologKey: "topology.kubernetes.io/zone"
+podAntiAffinity: "hard"
+
+# 双活部署模式 支持 N主N数据，N主N数据N协调，N主N数据N协调N冷 三种模式
+# N主：3 或者3以上单数
+# N数据：4或者4以上偶数，默认值为4
+# N协调：2或者2以上偶数，默认值为2
+# N冷：2或者2以上偶数，默认值为2
+cluster:
+  mode: complex
+  masterReplacesCount: 3
+  dataReplacesCount: 4
+#  clientReplacesCount: 2
+#  coldReplacesCount: 2
+
+resources:
+  cold:
+    limits:
+      cpu: "1"
+      memory: 4Gi
+    requests:
+      cpu: "1"
+      memory: 4Gi
+  client:
+    limits:
+      cpu: "1"
+      memory: 4Gi
+    requests:
+      cpu: "1"
+      memory: 4Gi
+  data:
+    limits:
+      cpu: "1"
+      memory: 4Gi
+    requests:
+      cpu: "1"
+      memory: 1Gi
+  kibana:
+    limits:
+      cpu: "500m"
+      memory: 1Gi
+    requests:
+      cpu: "500m"
+      memory: 1Gi
+  master:
+    limits:
+      cpu: "1"
+      memory: 4Gi
+    requests:
+      cpu: "1"
+      memory: 1Gi
+
+storage:
+  masterSize: 1Gi
+  dataSize: 1Gi
+  clientSize: 5Gi
+  coldSize: 5Gi

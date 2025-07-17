@@ -1,0 +1,85 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareActionBaseline
+metadata:
+  name: pre-elasticsearch-tolerations
+spec:
+  baselineType: "PreAction"
+  actionType: "tolerations"
+  necessary:
+    tolerations: "array"
+  steps:
+    - name: tolerations
+      type: "KubectlEdit" # KubectlGet、KubectlEdit、KubectlExec、Exec、HTTP
+      cue: |
+        output: {
+          spec: parameters.spec
+        }
+        parameters: {
+          spec: {
+            parameters: {
+              {{- if .Necessary.tolerations }}
+              statefulset: {
+                spec: {
+                  template: {
+                    spec: {
+                      {{- with .Necessary.tolerations }}
+                      tolerations: {{ toCue . }}
+                      {{- end }}
+                    }
+                  }
+                }
+              }
+              deploymentComponent: {
+                kibana: {
+                  spec: {
+                    template: {
+                      spec: {
+                        {{- with .Necessary.tolerations }}
+                        tolerations: {{ toCue . }}
+                        {{- end }}
+                      }
+                    }
+                  }
+                }
+                exporter: {
+                  spec: {
+                    template: {
+                      spec: {
+                        {{- with .Necessary.tolerations }}
+                        tolerations: {{ toCue . }}
+                        {{- end }}
+                      }
+                    }
+                  }
+                }
+              }
+              esMaster: {
+                {{- with .Necessary.tolerations }}
+                tolerations: {{ toCue . }}
+                {{- end }}
+              }
+              esData: {
+                {{- with .Necessary.tolerations }}
+                tolerations: {{ toCue . }}
+                {{- end }}
+              }
+              esCold: {
+                {{- with .Necessary.tolerations }}
+                tolerations: {{ toCue . }}
+                {{- end }}
+              }
+              esClient: {
+                {{- with .Necessary.tolerations }}
+                tolerations: {{ toCue . }}
+                {{- end }}
+              }
+              {{- end }}
+            }
+          }
+          resource: {
+            apiversion: "middleware.cn/v1"
+            kind: "Middleware"
+            name: "{{ .Globe.Name }}"
+            namespace: "{{ .Globe.Namespace }}"
+          }
+        }

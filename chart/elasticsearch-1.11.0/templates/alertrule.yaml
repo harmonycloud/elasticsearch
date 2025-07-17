@@ -1,0 +1,154 @@
+{{- if  .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: {{ include "elasticsearch.fullname" . }}
+spec:
+  groups:
+  - name: elasticsearch-cluster
+    rules:
+    - alert: Elasticsearch_health_up
+      expr: elasticsearch_cluster_health_up{service='{{ include "elasticsearch.fullname" . }}'} != 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: ElasticSearch instance is unhealthy. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+    - alert: Elasticsearch_Count_of_JVM_GC_Runs
+      expr: rate(elasticsearch_jvm_gc_collection_seconds_count{service='{{ include "elasticsearch.fullname" . }}'}[5m]) > 5
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: Count of JVM GC runs > 5 per sec and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+    - alert: Elasticsearch_GC_Run_Time
+      expr: rate(elasticsearch_jvm_gc_collection_seconds_sum{service='{{ include "elasticsearch.fullname" . }}'}[5m]) > 0.3
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: GC run time in seconds > 0.3 sec and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+#    - alert: Elasticsearch_json_parse_failures
+#      expr: elasticsearch_cluster_health_json_parse_failures{service='{{ include "elasticsearch.fullname" . }}'} > 0
+#      for: 5m
+#      labels:
+#        severity: warning
+#      annotations:
+#        message: 'ElasticSearch: json parse failures > 0 and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+    - alert: Elasticsearch_breakers_tripped
+      expr: rate(elasticsearch_breakers_tripped{service='{{ include "elasticsearch.fullname" . }}'}[5m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: breakers tripped > 0 and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+    - alert: Elasticsearch_health_timed_out
+      expr: elasticsearch_cluster_health_timed_out{service='{{ include "elasticsearch.fullname" . }}'} > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: Number of cluster health checks timed out > 0 and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+    - alert: ElasticsearchHeapUsageTooHigh
+      expr: (elasticsearch_jvm_memory_used_bytes{area="heap",service='{{ include "elasticsearch.fullname" . }}'} / elasticsearch_jvm_memory_max_bytes{area="heap",service='{{ include "elasticsearch.fullname" . }}'}) * 100 > 90
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: The heap usage is over 90%,  current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+    - alert: ElasticsearchHeapUsageWarning
+      expr: (elasticsearch_jvm_memory_used_bytes{area="heap",service='{{ include "elasticsearch.fullname" . }}'} / elasticsearch_jvm_memory_max_bytes{area="heap",service='{{ include "elasticsearch.fullname" . }}'}) * 100 > 80
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'Elasticsearch: The heap usage is over 80%, current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+    - alert: ElasticsearchDiskOutOfSpace
+      expr: elasticsearch_filesystem_data_available_bytes{service='{{ include "elasticsearch.fullname" . }}'} / elasticsearch_filesystem_data_size_bytes{service='{{ include "elasticsearch.fullname" . }}'} * 100 < 15
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'Elasticsearch: The available disk space is less than 15%,  current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+    - alert: ElasticsearchDiskSpaceLow
+      expr: elasticsearch_filesystem_data_available_bytes{service='{{ include "elasticsearch.fullname" . }}'} / elasticsearch_filesystem_data_size_bytes{service='{{ include "elasticsearch.fullname" . }}'} * 100 < 30
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'Elasticsearch: The available disk space is less than 30%,  current_value = {{`{{ printf "%.0f" $value }`}}}%. (Namespace: {{ .Release.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+    - alert: ElasticsearchClusterRed
+      expr: elasticsearch_cluster_health_status{color="red",service='{{ include "elasticsearch.fullname" . }}'} == 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'Elasticsearch: The cluster is in red state. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    - alert: ElasticsearchClusterYellow
+      expr: elasticsearch_cluster_health_status{color="yellow",service='{{ include "elasticsearch.fullname" . }}'} == 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'Elasticsearch: The cluster is in yellow state. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    - alert: ElasticsearchHealthyNodes
+      expr: elasticsearch_cluster_health_number_of_nodes{service='{{ include "elasticsearch.fullname" . }}'} < number_of_nodes
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'Elasticsearch: Number Healthy Nodes less then number_of_nodes, current_value = {{`{{ $value }`}}}. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    - alert: ElasticsearchRelocatingShards
+      expr: elasticsearch_cluster_health_relocating_shards{service='{{ include "elasticsearch.fullname" . }}'} > 0
+      for: 5m
+      labels:
+        severity: info
+      annotations:
+        message: 'ElasticSearch: Elasticsearch is relocating shards,  current_value = {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    - alert: ElasticsearchRelocatingShardsTooLong
+      expr: elasticsearch_cluster_health_relocating_shards{service='{{ include "elasticsearch.fullname" . }}'} > 0
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: Elasticsearch has been relocating shards for 15min, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    - alert: ElasticsearchInitializingShards
+      expr: elasticsearch_cluster_health_initializing_shards{service='{{ include "elasticsearch.fullname" . }}'} > 0
+      for: 5m
+      labels:
+        severity: info
+      annotations:
+        message: 'ElasticSearch: Elasticsearch is initializing shards, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    - alert: ElasticsearchInitializingShardsTooLong
+      expr: elasticsearch_cluster_health_initializing_shards{service='{{ include "elasticsearch.fullname" . }}'} > 0
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: Elasticsearch has been initializing shards for 15 min, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    - alert: ElasticsearchUnassignedShards
+      expr: elasticsearch_cluster_health_unassigned_shards{service='{{ include "elasticsearch.fullname" . }}'} > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: Elasticsearch has unassigned shards, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    - alert: ElasticsearchPendingTasks
+      expr: elasticsearch_cluster_health_number_of_pending_tasks{service='{{ include "elasticsearch.fullname" . }}'} > 0
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        message: 'ElasticSearch: Elasticsearch has pending tasks. Cluster works slowly, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    - alert: ElasticsearchOpenFdsUsageTooHigh
+      expr: (process_open_fds{service='{{ include "elasticsearch.fullname" . }}'} / process_max_fds{service='{{ include "elasticsearch.fullname" . }}'}) * 100 > 75
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        message: 'Elasticsearch: The Open Fds usage is over 75%, current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Release.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+
+{{- end }}

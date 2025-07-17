@@ -1,0 +1,423 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareActionBaseline
+metadata:
+  name: pre-elasticsearch-affinity
+spec:
+  baselineType: "PreAction"
+  actionType: "affinity"
+  necessary:
+    podAntiAffinityTopologKey: ""
+    podAntiAffinity: ""
+    nodeAffinity: ""
+    activeActive: ""
+  steps:
+    - name: affinity
+      type: "KubectlEdit" # KubectlGet、KubectlEdit、KubectlExec、Exec、HTTP
+      cue: |
+        output: {
+          spec: parameters.spec
+        }
+        parameters: {
+          spec: {
+            parameters: {
+              pod: [
+                {
+                  podAntiAffinityTopologKey: "{{ .Necessary.podAntiAffinityTopologKey }}"
+                  podAntiAffinity: "{{ .Necessary.podAntiAffinity }}"
+                },
+              ]
+              deploymentComponent: {
+                kibana: {
+                  spec: {
+                    template: {
+                      spec: {
+                        {{- with .Necessary.nodeAffinity }}
+                        affinity: {
+                          nodeAffinity: {{ toCue . }}
+                        }
+                        {{- end }}
+                      }
+                    }
+                  }
+                }
+                exporter: {
+                  spec: {
+                    template: {
+                      spec: {
+                        {{- with .Necessary.nodeAffinity }}
+                        affinity: {
+                          nodeAffinity: {{ toCue . }}
+                        }
+                        {{- end }}
+                      }
+                    }
+                  }
+                }
+              }
+              esMaster: {
+                {{- if eq (semverCompare ">= 1.19-0" .Capabilities.KubeVersion.Version) true }}
+                topologySpreadConstraints: [
+                  {{- if ne .Necessary.podAntiAffinityTopologKey "kubernetes.io/hostname"}}
+                  {
+                    maxSkew: 1
+                    topologyKey: "{{ .Necessary.podAntiAffinityTopologKey | default "" }}"
+                    {{- if eq .Necessary.podAntiAffinity "hard"}}
+                    whenUnsatisfiable: "DoNotSchedule"
+                    {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                    whenUnsatisfiable: "ScheduleAnyway"
+                    {{- end }}
+                    labelSelector: {
+                      matchLabels: {
+                        "affinitytype": "{{ .Globe.Name }}master"
+                      }
+                    }
+                  },
+                  {{- end }}
+                  {
+                    maxSkew: 1
+                    topologyKey: "kubernetes.io/hostname"
+                    topologyKey: "{{ .Necessary.podAntiAffinityTopologKey | default "" }}"
+                    {{- if eq .Necessary.podAntiAffinity "hard"}}
+                    whenUnsatisfiable: "DoNotSchedule"
+                    {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                    whenUnsatisfiable: "ScheduleAnyway"
+                    {{- end }}
+                    labelSelector: {
+                      matchLabels: {
+                        "affinitytype": "{{ .Globe.Name }}master"
+                      }
+                    }
+                  },
+                ]
+    
+                {{- if eq .Necessary.activeActive false }}
+                {{- if .Necessary.nodeAffinity }}
+                affinity: {
+                  {{- with .Necessary.nodeAffinity }}
+                  nodeAffinity: {{ toCue . }}
+                  {{- end }}
+                }
+                {{- end }}
+                {{- end }}
+        
+                {{- end }}
+        
+                {{- if eq (semverCompare ">= 1.19-0" .Capabilities.KubeVersion.Version) false }}
+                affinity: {
+                  {{- if eq .Necessary.podAntiAffinity "hard"}}
+                  podAntiAffinity: {
+                    requiredDuringSchedulingIgnoredDuringExecution: [
+                      {
+                        topologyKey: "{{ .Necessary.podAntiAffinityTopologKey }}"
+                        labelSelector: {
+                          matchExpressions: [
+                            {
+                              key: "affinitytype"
+                              operator: "In"
+                              values: ["{{ .Globe.Name }}master"]
+                            },
+                          ]
+                        }
+                      },
+                    ]
+                  }
+                  {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                  podAntiAffinity: {
+                    preferredDuringSchedulingIgnoredDuringExecution: [
+                      {
+                        weight: 100
+                        podAffinityTerm: {
+                          topologyKey: "{{ .Necessary.podAntiAffinityTopologKey }}"
+                          labelSelector:
+                            matchExpressions:
+                            - key: "affinitytype"
+                              operator: "In"
+                              values: ["{{ .Globe.Name }}master"]
+                        }
+                      },
+                    ]
+                  }
+                  {{- end }}
+        
+                  {{- with .Necessary.nodeAffinity }}
+                  nodeAffinity: {{ toCue . }}
+                  {{- end }}
+                }
+                {{- end }}
+              }
+              esData: {
+                {{- if eq (semverCompare ">= 1.19-0" .Capabilities.KubeVersion.Version) true }}
+                topologySpreadConstraints: [
+                  {{- if ne .Necessary.podAntiAffinityTopologKey "kubernetes.io/hostname"}}
+                  {
+                    maxSkew: 1
+                    topologyKey: "{{ .Necessary.podAntiAffinityTopologKey | default "" }}"
+                    {{- if eq .Necessary.podAntiAffinity "hard"}}
+                    whenUnsatisfiable: "DoNotSchedule"
+                    {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                    whenUnsatisfiable: "ScheduleAnyway"
+                    {{- end }}
+                    labelSelector: {
+                      matchLabels: {
+                        "affinitytype": "{{ .Globe.Name }}data"
+                      }
+                    }
+                  },
+                  {{- end }}
+                  {
+                    maxSkew: 1
+                    topologyKey: "kubernetes.io/hostname"
+                    topologyKey: "{{ .Necessary.podAntiAffinityTopologKey | default "" }}"
+                    {{- if eq .Necessary.podAntiAffinity "hard"}}
+                    whenUnsatisfiable: "DoNotSchedule"
+                    {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                    whenUnsatisfiable: "ScheduleAnyway"
+                    {{- end }}
+                    labelSelector: {
+                      matchLabels: {
+                        "affinitytype": "{{ .Globe.Name }}data"
+                      }
+                    }
+                  },
+                ]
+        
+                {{- if .Necessary.nodeAffinity }}
+                affinity: {
+                  {{- with .Necessary.nodeAffinity }}
+                  nodeAffinity: {{ toCue . }}
+                  {{- end }}
+                }
+                {{- end }}
+        
+                {{- end }}
+        
+                {{- if eq (semverCompare ">= 1.19-0" .Capabilities.KubeVersion.Version) false }}
+                affinity: {
+                  {{- if eq .Necessary.podAntiAffinity "hard"}}
+                  podAntiAffinity: {
+                    requiredDuringSchedulingIgnoredDuringExecution: [
+                      {
+                        topologyKey: "{{ .Necessary.podAntiAffinityTopologKey }}"
+                        labelSelector: {
+                          matchExpressions: [
+                            {
+                              key: "affinitytype"
+                              operator: "In"
+                              values: ["{{ .Globe.Name }}data"]
+                            },
+                          ]
+                        }
+                      },
+                    ]
+                  }
+                  {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                  podAntiAffinity: {
+                    preferredDuringSchedulingIgnoredDuringExecution: [
+                      {
+                        weight: 100
+                        podAffinityTerm: {
+                          topologyKey: "{{ .Necessary.podAntiAffinityTopologKey }}"
+                          labelSelector:
+                            matchExpressions:
+                            - key: "affinitytype"
+                              operator: "In"
+                              values: ["{{ .Globe.Name }}data"]
+                        }
+                      },
+                    ]
+                  }
+                  {{- end }}
+        
+                  {{- with .Necessary.nodeAffinity }}
+                  nodeAffinity: {{ toCue . }}
+                  {{- end }}
+                }
+                {{- end }}
+              }
+              esCold: {
+                {{- if eq (semverCompare ">= 1.19-0" .Capabilities.KubeVersion.Version) true }}
+                topologySpreadConstraints: [
+                  {{- if ne .Necessary.podAntiAffinityTopologKey "kubernetes.io/hostname"}}
+                  {
+                    maxSkew: 1
+                    topologyKey: "{{ .Necessary.podAntiAffinityTopologKey | default "" }}"
+                    {{- if eq .Necessary.podAntiAffinity "hard"}}
+                    whenUnsatisfiable: "DoNotSchedule"
+                    {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                    whenUnsatisfiable: "ScheduleAnyway"
+                    {{- end }}
+                    labelSelector: {
+                      matchLabels: {
+                        "affinitytype": "{{ .Globe.Name }}cold"
+                      }
+                    }
+                  },
+                  {{- end }}
+                  {
+                    maxSkew: 1
+                    topologyKey: "kubernetes.io/hostname"
+                    topologyKey: "{{ .Necessary.podAntiAffinityTopologKey | default "" }}"
+                    {{- if eq .Necessary.podAntiAffinity "hard"}}
+                    whenUnsatisfiable: "DoNotSchedule"
+                    {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                    whenUnsatisfiable: "ScheduleAnyway"
+                    {{- end }}
+                    labelSelector: {
+                      matchLabels: {
+                        "affinitytype": "{{ .Globe.Name }}cold"
+                      }
+                    }
+                  },
+                ]
+        
+                {{- if .Necessary.nodeAffinity }}
+                affinity: {
+                  {{- with .Necessary.nodeAffinity }}
+                  nodeAffinity: {{ toCue . }}
+                  {{- end }}
+                }
+                {{- end }}
+        
+                {{- end }}
+        
+                {{- if eq (semverCompare ">= 1.19-0" .Capabilities.KubeVersion.Version) false }}
+                affinity: {
+                  {{- if eq .Necessary.podAntiAffinity "hard"}}
+                  podAntiAffinity: {
+                    requiredDuringSchedulingIgnoredDuringExecution: [
+                      {
+                        topologyKey: "{{ .Necessary.podAntiAffinityTopologKey }}"
+                        labelSelector: {
+                          matchExpressions: [
+                            {
+                              key: "affinitytype"
+                              operator: "In"
+                              values: ["{{ .Globe.Name }}cold"]
+                            },
+                          ]
+                        }
+                      },
+                    ]
+                  }
+                  {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                  podAntiAffinity: {
+                    preferredDuringSchedulingIgnoredDuringExecution: [
+                      {
+                        weight: 100
+                        podAffinityTerm: {
+                          topologyKey: "{{ .Necessary.podAntiAffinityTopologKey }}"
+                          labelSelector:
+                            matchExpressions:
+                            - key: "affinitytype"
+                              operator: "In"
+                              values: ["{{ .Globe.Name }}cold"]
+                        }
+                      },
+                    ]
+                  }
+                  {{- end }}
+        
+                  {{- with .Necessary.nodeAffinity }}
+                  nodeAffinity: {{ toCue . }}
+                  {{- end }}
+                }
+                {{- end }}
+              }
+              esClient: {
+                {{- if eq (semverCompare ">= 1.19-0" .Capabilities.KubeVersion.Version) true }}
+                topologySpreadConstraints: [
+                  {{- if ne .Necessary.podAntiAffinityTopologKey "kubernetes.io/hostname"}}
+                  {
+                    maxSkew: 1
+                    topologyKey: "{{ .Necessary.podAntiAffinityTopologKey | default "" }}"
+                    {{- if eq .Necessary.podAntiAffinity "hard"}}
+                    whenUnsatisfiable: "DoNotSchedule"
+                    {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                    whenUnsatisfiable: "ScheduleAnyway"
+                    {{- end }}
+                    labelSelector: {
+                      matchLabels: {
+                        "affinitytype": "{{ .Globe.Name }}client"
+                      }
+                    }
+                  },
+                  {{- end }}
+                  {
+                    maxSkew: 1
+                    topologyKey: "kubernetes.io/hostname"
+                    topologyKey: "{{ .Necessary.podAntiAffinityTopologKey | default "" }}"
+                    {{- if eq .Necessary.podAntiAffinity "hard"}}
+                    whenUnsatisfiable: "DoNotSchedule"
+                    {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                    whenUnsatisfiable: "ScheduleAnyway"
+                    {{- end }}
+                    labelSelector: {
+                      matchLabels: {
+                        "affinitytype": "{{ .Globe.Name }}client"
+                      }
+                    }
+                  },
+                ]
+        
+                {{- if .Necessary.nodeAffinity }}
+                affinity: {
+                  {{- with .Necessary.nodeAffinity }}
+                  nodeAffinity: {{ toCue . }}
+                  {{- end }}
+                }
+                {{- end }}
+        
+                {{- end }}
+        
+                {{- if eq (semverCompare ">= 1.19-0" .Capabilities.KubeVersion.Version) false }}
+                affinity: {
+                  {{- if eq .Necessary.podAntiAffinity "hard"}}
+                  podAntiAffinity: {
+                    requiredDuringSchedulingIgnoredDuringExecution: [
+                      {
+                        topologyKey: "{{ .Necessary.podAntiAffinityTopologKey }}"
+                        labelSelector: {
+                          matchExpressions: [
+                            {
+                              key: "affinitytype"
+                              operator: "In"
+                              values: ["{{ .Globe.Name }}client"]
+                            },
+                          ]
+                        }
+                      },
+                    ]
+                  }
+                  {{- else if eq .Necessary.podAntiAffinity "soft"}}
+                  podAntiAffinity: {
+                    preferredDuringSchedulingIgnoredDuringExecution: [
+                      {
+                        weight: 100
+                        podAffinityTerm: {
+                          topologyKey: "{{ .Necessary.podAntiAffinityTopologKey }}"
+                          labelSelector:
+                            matchExpressions:
+                            - key: "affinitytype"
+                              operator: "In"
+                              values: ["{{ .Globe.Name }}client"]
+                        }
+                      },
+                    ]
+                  }
+                  {{- end }}
+        
+                  {{- with .Necessary.nodeAffinity }}
+                  nodeAffinity: {{ toCue . }}
+                  {{- end }}
+                }
+                {{- end }}
+              }
+            }
+          }
+          resource: {
+            apiversion: "middleware.cn/v1"
+            kind: "Middleware"
+            name: "{{ .Globe.Name }}"
+            namespace: "{{ .Globe.Namespace }}"
+          }
+        }

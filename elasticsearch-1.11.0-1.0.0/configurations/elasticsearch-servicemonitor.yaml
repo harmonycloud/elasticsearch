@@ -1,0 +1,32 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareConfiguration
+metadata:
+  name: elasticsearch-servicemonitor
+spec:
+  template: |
+    apiVersion: monitoring.coreos.com/v1
+    kind: ServiceMonitor
+    metadata:
+      generation: 1
+      labels:
+        app: {{ .Globe.Name }}-exporter
+      name: {{ .Globe.Name }}-exporter
+    spec:
+      endpoints:
+      - interval: 30s
+        port: ui
+        scheme: http
+        relabelings:
+          - replacement: elasticsearch
+            targetLabel: middleware
+          - sourceLabels: [service]
+            replacement: {{ .Globe.Name }}
+            targetLabel: service
+        metricRelabelings:
+          - sourceLabels: [name]
+            regex: "(.+)"
+            targetLabel: "pod"
+            replacement: "$1"
+      selector:
+        matchLabels:
+          app: {{ .Globe.Name }}-exporter

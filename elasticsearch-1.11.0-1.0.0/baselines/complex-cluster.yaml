@@ -1,0 +1,264 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareBaseline
+metadata:
+  name: elasticsearch-complex-cluster
+  annotations:
+    baselineName: "混合模式"
+    description: "混合模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+spec:
+  operatorBaseline:
+    name: elasticsearch-operator-standard
+    gvkName: v1alpha1
+  necessary:
+    version: "7.16.3"
+    repository: ""
+    volume:
+      size: ""
+      storageClass: ""
+    elasticPassword: "Hc@Cloud01"
+    esport:
+      esExporterPort: "19114"
+      esHttpPort: "9200"
+      esKibanaPort: "5200"
+      esTcpPort: "9300"
+    elasticsearchResource:
+      client:
+        limits:
+          cpu: "1"
+          memory: "4Gi"
+        requests:
+          cpu: "1"
+          memory: "4Gi"
+        replaces: "2"
+      cold:
+        limits:
+          cpu: "1"
+          memory: "4Gi"
+        requests:
+          cpu: "1"
+          memory: "4Gi"
+        replaces: "3"
+      data:
+        limits:
+          cpu: "1"
+          memory: "4Gi"
+        requests:
+          cpu: "1"
+          memory: "4Gi"
+        replaces: "3"
+      kibana:
+        limits:
+          cpu: "500m"
+          memory: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        replaces: "1"
+      master:
+        limits:
+          cpu: "1"
+          memory: "4Gi"
+        requests:
+          cpu: "1"
+          memory: "4Gi"
+        replaces: "3" 
+  preActions:
+    - name: pre-elasticsearch-logging
+      parameters:
+        fileLogging: true
+        stdoutLogging: true
+      exposed: true
+    - name: pre-elasticsearch-active-active
+      parameters: {}
+      exposed: false
+    - name: pre-elasticsearch-hostnetwork
+      parameters:
+        hostNetwork: false
+      exposed: true
+    - name: pre-elasticsearch-tolerations
+      parameters:
+        tolerations: [ ]
+      exposed: true
+    - name: pre-elasticsearch-affinity
+      parameters:
+        podAntiAffinityTopologKey: "kubernetes.io/hostname"
+        podAntiAffinity: "soft"
+        nodeAffinity: { }
+        activeActive: false
+      exposed: true
+    - name: pre-elasticsearch-kibana-affinity
+      parameters:
+        nodeAffinity: { }
+      exposed: true
+    - name: pre-elasticsearch-exporter-tolerations
+      parameters:
+        tolerations: [ ]
+      exposed: true
+    - name: pre-elasticsearch-exporter-affinity
+      parameters:
+        nodeAffinity: { }
+      exposed: true
+    - name: pre-elasticsearch-kibana-tolerations
+      parameters:
+        tolerations: [ ]
+      exposed: true
+  parameters:
+    clusterMode: complex
+    clusterName: "{{ .Globe.Name }}"
+    checkHealthConfigMap: "{{ .Globe.Name }}-checkhealth-config"
+    elasticKibanaConfigMap: "{{ .Globe.Name }}-kibana-config"
+    elasticSearchConfigMap: "{{ .Globe.Name }}-es-config"
+    esExporterPort: "{{ .Necessary.esport.esExporterPort }}"
+    esHttpPort: "{{ .Necessary.esport.esHttpPort }}"
+    esKibanaPort: "{{ .Necessary.esport.esKibanaPort }}"
+    esTcpPort: "{{ .Necessary.esport.esTcpPort }}"
+    elasticPass: "Hc@Cloud01"
+    kibanaImage: "{{ .Necessary.repository }}/kibana:7.16.3"
+    elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"
+    kibanaReplicas: "{{ .Necessary.elasticsearchResource.kibana.replaces }}"
+    masterReplaces: "{{ .Necessary.elasticsearchResource.master.replaces }}"
+    dataReplaces: "{{ .Necessary.elasticsearchResource.data.replaces }}"
+    clientReplaces: "{{ .Necessary.elasticsearchResource.client.replaces }}"
+    coldReplaces: "{{ .Necessary.elasticsearchResource.cold.replaces }}"
+    totalReplaces: "{{ add .Necessary.elasticsearchResource.master.replaces .Necessary.elasticsearchResource.data.replaces .Necessary.elasticsearchResource.client.replaces .Necessary.elasticsearchResource.cold.replaces }}"
+    pod:
+      - env:
+          - name: PathRepo
+            value: /data/elastic/{ClusterName}/{PodName}/data/data_back
+        initImage: "{{ .Necessary.repository }}/es-init:v1.7.0"
+        podAntiAffinityTopologKey: kubernetes.io/hostname
+        podAntiAffinity: soft
+        storage:
+          clientSize: 5Gi
+          coldSize: 5Gi
+          dataSize: 5Gi
+          masterSize: 5Gi
+        middlewareImage: "{{ .Necessary.repository }}/elastic:7.16.3-466e79"
+        monitorImage: "{{ .Necessary.repository }}/es-exporter:v1.6.0"
+        hostNetwork: false
+        resources:
+          client:
+            limits:
+              cpu: '"{{ .Necessary.resource.client.limits.cpu }}"'
+              memory: '"{{ .Necessary.resource.client.limits.memory }}"'
+            requests:
+              cpu: '"{{ .Necessary.resource.client.requests.cpu }}"'
+              memory: '"{{ .Necessary.resource.client.requests.memory }}"'
+          cold:
+            limits:
+              cpu: '"{{ .Necessary.resource.cold.limits.cpu }}"'
+              memory: '"{{ .Necessary.resource.cold.limits.memory }}"'
+            requests:
+              cpu: '"{{ .Necessary.resource.cold.requests.cpu }}"'
+              memory: '"{{ .Necessary.resource.cold.requests.memory }}"'
+          data:
+            limits:
+              cpu: '"{{ .Necessary.resource.data.limits.cpu }}"'
+              memory: '"{{ .Necessary.resource.data.limits.memory }}"'
+            requests:
+              cpu: '"{{ .Necessary.resource.data.requests.cpu }}"'
+              memory: '"{{ .Necessary.resource.cold.requests.memory }}"'
+          kibana:
+            limits:
+              cpu: '"{{ .Necessary.resource.kibana.limits.cpu }}"'
+              memory: '"{{ .Necessary.resource.kibana.limits.memory }}"'
+            requests:
+              cpu: '"{{ .Necessary.resource.kibana.requests.cpu }}"'
+              memory: '"{{ .Necessary.resource.kibana.requests.memory }}"'
+          master:
+            limits:
+              cpu: '"{{ .Necessary.resource.master.limits.cpu }}"'
+              memory: '"{{ .Necessary.resource.master.limits.memory }}"'
+            requests:
+              cpu: '"{{ .Necessary.resource.master.requests.cpu }}"'
+              memory: '"{{ .Necessary.resource.master.requests.memory }}"'
+    projectId: a9927d1581674f27
+    repository: "{{ .Necessary.repository }}"
+    type: complex
+    updateStrategy: { }
+    version: "7.16.3"
+    esMaster:
+    esData:
+    esCold:
+    esClient:
+    statefulset:
+      spec:
+        updateStrategy:
+          type: RollingUpdate
+        template:
+          metadata:
+          spec:
+            initContainers:
+              - env:
+                  - name: NodeName
+                    valueFrom:
+                      fieldRef:
+                        apiVersion: v1
+                        fieldPath: spec.nodeName
+                name: "{{ .Globe.Name }}-init"
+    deploymentComponent:
+      kibana:
+        spec:
+          template:
+            metadata:
+            spec:
+      exporter:
+        spec:
+          template:
+            metadata:
+            spec:
+    volumeClaimTemplates:
+      - metadata:
+          creationTimestamp: null
+          name: es-data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          dataSource: null
+          resources:
+            requests:
+              storage: "{{ .Necessary.volume.size }}"
+          storageClassName: "{{ .Necessary.volume.storageClass }}"
+        status: { }
+    volumes: { }
+  configurations:
+    - name: elasticsearch-alertrule
+      values: { }
+    - name: elasticsearch-clusterrole
+      values: { }
+    - name: elasticsearch-clusterrolebinding
+      values: { }
+    - name: elasticsearch-clusterrolebinding-sa
+      values:
+        activeActive:
+          enable:
+    - name: elasticsearch-serviceaccount
+      values: { }
+    - name: elasticsearch-serviceaccount-sa
+      values:
+        activeActive:
+          enable:
+    - name: elasticsearch-connection-credential
+      values:
+        elasticPassword: "{{ .Parameters.elasticPass }}"
+    - name: elasticsearch-checkhealth-config
+      values:
+        elasticPassword: "{{ .Parameters.elasticPass }}"
+        port:
+          esHttpPort: "{{ .Parameters.esHttpPort }}"
+    - name: elasticsearch-es-config
+      values:
+        args: { }
+        version: "{{ .Parameters.version }}"
+        port:
+          esHttpPort: "{{ .Parameters.esHttpPort }}"
+          esTcpPort: "{{ .Parameters.esTcpPort }}"
+        additionArgs: { }
+    - name: elasticsearch-kibana-config
+      values:
+        port:
+          esKibanaPort: "{{ .Parameters.esKibanaPort }}"
+        version: "{{ .Parameters.version }}"
+        elasticPassword: "{{ .Parameters.elasticPass }}"
+    - name: elasticsearch-servicemonitor
+      values: { }

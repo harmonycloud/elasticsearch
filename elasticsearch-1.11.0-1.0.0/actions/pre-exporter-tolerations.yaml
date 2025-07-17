@@ -1,0 +1,40 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareActionBaseline
+metadata:
+  name: pre-elasticsearch-kibana-tolerations
+spec:
+  baselineType: "PreAction"
+  actionType: "tolerations"
+  necessary:
+    tolerations: ""
+  steps:
+    - name: configuration
+      type: "KubectlEdit" # KubectlGet、KubectlEdit、KubectlExec、Exec、HTTP
+      cue: |
+        output: {
+          spec: parameters.spec
+        }
+        parameters: {
+          spec: {
+            parameters: {
+              deploymentComponent: {
+                exporter: {
+                  spec: {
+                    template: {
+                      {{- with .Necessary.tolerations }}
+                      spec:
+                        tolerations: {{ toCue . }}
+                      {{- end }}
+                    }
+                  }
+                }
+              }
+            }
+          }
+          resource: {
+            apiversion: "middleware.cn/v1"
+            kind: "Middleware"
+            name: "{{ .Globe.Name }}"
+            namespace: "{{ .Globe.Namespace }}"
+          }
+        }
