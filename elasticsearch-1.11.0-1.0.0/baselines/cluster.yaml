@@ -12,9 +12,6 @@ spec:
   necessary:
     version: "7.16.3"
     repository: ""
-    volume:
-      size: ""
-      storageClass: ""
     password: "Hc@Cloud01"
     resource:
       client:
@@ -53,6 +50,9 @@ spec:
           cpu: "1"
           memory: "4Gi"
         replaces: "3"
+        volume:
+          size: ""
+          storageClass: ""
   preActions:
     - name: pre-elasticsearch-logging
       parameters:
@@ -209,8 +209,8 @@ spec:
           dataSource: null
           resources:
             requests:
-              storage: "{{ .Necessary.volume.size }}"
-          storageClassName: "{{ .Necessary.volume.storageClass }}"
+              storage: "{{ .Necessary.resource.master.volume.size }}"
+          storageClassName: "{{ .Necessary.resource.master.volume.storageClass }}"
         status: { }
     volumes: { }
   configurations:
