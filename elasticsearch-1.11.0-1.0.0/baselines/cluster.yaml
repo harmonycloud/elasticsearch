@@ -13,6 +13,11 @@ spec:
     version: "7.16.3"
     repository: ""
     password: "Hc@Cloud01"
+    elasticsearchPort:
+      exporter: "19114"
+      http: "9200"
+      kibana: "5200"
+      tcp: "9300"
     resource:
       client:
         limits:
@@ -99,10 +104,10 @@ spec:
     checkHealthConfigMap: "{{ .Globe.Name }}-checkhealth-config"
     elasticKibanaConfigMap: "{{ .Globe.Name }}-kibana-config"
     elasticSearchConfigMap: "{{ .Globe.Name }}-es-config"
-    esExporterPort: 19114
-    esHttpPort: 9200
-    esKibanaPort: 5200
-    esTcpPort: 9300
+    esExporterPort: "{{ .Necessary.elasticsearchPort.exporter }}"
+    esHttpPort: "{{ .Necessary.elasticsearchPort.http }}"
+    esKibanaPort: "{{ .Necessary.elasticsearchPort.kibana }}"
+    esTcpPort: "{{ .Necessary.elasticsearchPort.tcp }}"
     elasticPass: "{{ .Necessary.password }}"
     kibanaImage: '{{ .Necessary.repository }}/kibana:{{ if contains "6.8" .Necessary.version }}6.8.10{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else if eq "8.11.3" .Necessary.version }}8.11.3{{ else }}8.13.4{{ end }}'
     elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"

@@ -1,2 +1,2 @@
-# ds-elasticsearch
+# elasticsearch
 

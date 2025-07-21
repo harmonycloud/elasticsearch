@@ -12,16 +12,13 @@ spec:
   necessary:
     version: "7.16.3"
     repository: ""
-    volume:
-      size: ""
-      storageClass: ""
-    elasticPassword: "Hc@Cloud01"
-    esport:
-      esExporterPort: "19114"
-      esHttpPort: "9200"
-      esKibanaPort: "5200"
-      esTcpPort: "9300"
-    elasticsearchResource:
+    password: "Hc@Cloud01"
+    elasticsearchPort:
+      exporter: "19114"
+      http: "9200"
+      kibana: "5200"
+      tcp: "9300"
+    resource:
       client:
         limits:
           cpu: "1"
@@ -62,6 +59,9 @@ spec:
           cpu: "1"
           memory: "4Gi"
         replaces: "3" 
+        volume:
+          size: ""
+          storageClass: ""  
   preActions:
     - name: pre-elasticsearch-logging
       parameters:
@@ -108,10 +108,10 @@ spec:
     checkHealthConfigMap: "{{ .Globe.Name }}-checkhealth-config"
     elasticKibanaConfigMap: "{{ .Globe.Name }}-kibana-config"
     elasticSearchConfigMap: "{{ .Globe.Name }}-es-config"
-    esExporterPort: "{{ .Necessary.esport.esExporterPort }}"
-    esHttpPort: "{{ .Necessary.esport.esHttpPort }}"
-    esKibanaPort: "{{ .Necessary.esport.esKibanaPort }}"
-    esTcpPort: "{{ .Necessary.esport.esTcpPort }}"
+    esExporterPort: "{{ .Necessary.elasticsearchPort.exporter }}"
+    esHttpPort: "{{ .Necessary.elasticsearchPort.http }}"
+    esKibanaPort: "{{ .Necessary.elasticsearchPort.kibana }}"
+    esTcpPort: "{{ .Necessary.elasticsearchPort.tcp }}"
     elasticPass: "Hc@Cloud01"
     kibanaImage: "{{ .Necessary.repository }}/kibana:7.16.3"
     elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"
