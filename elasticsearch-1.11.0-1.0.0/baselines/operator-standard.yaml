@@ -22,13 +22,13 @@ spec:
         cpu: "100m"
         memory: "250Mi"
   preActions:
-    - name: pre-pgsql-operator-affinity
+    - name: pre-elasticsearch-operator-affinity
       parameters:
         podAntiAffinityTopologKey: "kubernetes.io/hostname"
         podAntiAffinity: "soft"
         nodeAffinity: [ ]
       exposed: true
-    - name: pre-pgsql-operator-tolerations
+    - name: pre-elasticsearch-operator-tolerations
       parameters:
         tolerations: [ ]
       exposed: true
