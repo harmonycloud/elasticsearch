@@ -1,7 +1,7 @@
 apiVersion: middleware.cn/v1
 kind: MiddlewareActionBaseline
 metadata:
-  name: pre-elasticsearch-kibana-tolerations
+  name: pre-elasticsearch-exporter-tolerations
 spec:
   baselineType: "PreAction"
   actionType: "tolerations"

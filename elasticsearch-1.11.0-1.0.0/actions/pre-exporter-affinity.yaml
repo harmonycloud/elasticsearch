@@ -1,7 +1,7 @@
 apiVersion: middleware.cn/v1
 kind: MiddlewareActionBaseline
 metadata:
-  name: pre-elasticsearch-kibana-affinity
+  name: pre-elasticsearch-exporter-affinity
 spec:
   baselineType: "PreAction"
   actionType: "affinity"
