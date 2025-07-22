@@ -3,6 +3,8 @@ kind: MiddlewareBaseline
 metadata:
   name: elasticsearch-cluster
   annotations:
+    OperationType: Create
+    developerPass: es
     baselineName: "集群模式"
     description: "集群模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
 spec:
@@ -112,11 +114,11 @@ spec:
     kibanaImage: '{{ .Necessary.repository }}/kibana:{{ if contains "6.8" .Necessary.version }}6.8.10{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else if eq "8.11.3" .Necessary.version }}8.11.3{{ else }}8.13.4{{ end }}'
     elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"
     kibanaReplicas: 1
-    masterReplaces: "{{ .Necessary.elasticsearchResource.master.replaces }}"
+    masterReplaces: "{{ .Necessary.resource.master.replaces }}"
     dataReplaces:
     clientReplaces:
     coldReplaces:
-    totalReplaces: "{{ .Necessary.elasticsearchResource.master.replaces }}"
+    totalReplaces: "{{ .Necessary.resource.master.replaces }}"
     pod:
       - env:
           - name: PathRepo
