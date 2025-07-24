@@ -237,5 +237,5 @@ spec:
       values: { }
     - name: "elasticsearch-operator-alertrule"
       values: { }
-    - name: "elasticsearch-operator-dashboard-configmap"
+    - name: "elasticsearch-operator-dashboard"
       values: { }
