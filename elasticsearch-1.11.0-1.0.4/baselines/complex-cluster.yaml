@@ -1,12 +1,12 @@
 apiVersion: middleware.cn/v1
 kind: MiddlewareBaseline
 metadata:
-  name: elasticsearch-cluster
+  name: elasticsearch-complex-cluster
   annotations:
     OperationType: Create
     developerPass: es
-    baselineName: "集群模式"
-    description: "集群模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+    baselineName: "混合模式"
+    description: "混合模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
 spec:
   operatorBaseline:
     name: elasticsearch-operator-standard
@@ -28,28 +28,11 @@ spec:
         requests:
           cpu: "1"
           memory: "4Gi"
+        replaces: "2"
+        volume:
+          size: "5Gi"
+          storageClass: ""
       cold:
-        limits:
-          cpu: "1"
-          memory: "4Gi"
-        requests:
-          cpu: "1"
-          memory: "4Gi"
-      data:
-        limits:
-          cpu: "1"
-          memory: "4Gi"
-        requests:
-          cpu: "1"
-          memory: "4Gi"
-      kibana:
-        limits:
-          cpu: "500m"
-          memory: "1Gi"
-        requests:
-          cpu: "500m"
-          memory: "1Gi"
-      master:
         limits:
           cpu: "1"
           memory: "4Gi"
@@ -58,8 +41,38 @@ spec:
           memory: "4Gi"
         replaces: "3"
         volume:
-          size: ""
+          size: "5Gi"
           storageClass: ""
+      data:
+        limits:
+          cpu: "1"
+          memory: "4Gi"
+        requests:
+          cpu: "1"
+          memory: "4Gi"
+        replaces: "3"
+        volume:
+          size: "5Gi"
+          storageClass: ""
+      kibana:
+        limits:
+          cpu: "500m"
+          memory: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+        replaces: "1"
+      master:
+        limits:
+          cpu: "1"
+          memory: "4Gi"
+        requests:
+          cpu: "1"
+          memory: "4Gi"
+        replaces: "3" 
+        volume:
+          size: ""
+          storageClass: ""  
   preActions:
     - name: pre-elasticsearch-logging
       parameters:
@@ -75,33 +88,33 @@ spec:
       exposed: true
     - name: pre-elasticsearch-tolerations
       parameters:
-        tolerations: []
+        tolerations: [ ]
       exposed: true
     - name: pre-elasticsearch-affinity
       parameters:
         podAntiAffinityTopologKey: "kubernetes.io/hostname"
         podAntiAffinity: "soft"
-        nodeAffinity: {}
+        nodeAffinity: { }
         activeActive: false
-      exposed: true
-    - name: pre-elasticsearch-kibana-tolerations
-      parameters:
-        tolerations: []
       exposed: true
     - name: pre-elasticsearch-kibana-affinity
       parameters:
-        nodeAffinity: {}
+        nodeAffinity: { }
       exposed: true
     - name: pre-elasticsearch-exporter-tolerations
       parameters:
-        tolerations: []
+        tolerations: [ ]
       exposed: true
     - name: pre-elasticsearch-exporter-affinity
       parameters:
-        nodeAffinity: {}
+        nodeAffinity: { }
+      exposed: true
+    - name: pre-elasticsearch-kibana-tolerations
+      parameters:
+        tolerations: [ ]
       exposed: true
   parameters:
-    clusterMode: simple
+    clusterMode: complex
     clusterName: "{{ .Globe.Name }}"
     checkHealthConfigMap: "{{ .Globe.Name }}-checkhealth-config"
     elasticKibanaConfigMap: "{{ .Globe.Name }}-kibana-config"
@@ -110,15 +123,15 @@ spec:
     esHttpPort: "{{ .Necessary.elasticsearchPort.http }}"
     esKibanaPort: "{{ .Necessary.elasticsearchPort.kibana }}"
     esTcpPort: "{{ .Necessary.elasticsearchPort.tcp }}"
-    elasticPass: "{{ .Necessary.password }}"
-    kibanaImage: '{{ .Necessary.repository }}/kibana:{{ if contains "6.8" .Necessary.version }}6.8.10{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else if eq "8.11.3" .Necessary.version }}8.11.3{{ else }}8.13.4{{ end }}'
+    elasticPass: "Hc@Cloud01"
+    kibanaImage: "{{ .Necessary.repository }}/kibana:7.16.3"
     elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"
-    kibanaReplicas: 1
+    kibanaReplicas: "{{ .Necessary.resource.kibana.replaces }}"
     masterReplaces: "{{ .Necessary.resource.master.replaces }}"
-    dataReplaces:
-    clientReplaces:
-    coldReplaces:
-    totalReplaces: "{{ .Necessary.resource.master.replaces }}"
+    dataReplaces: "{{ .Necessary.resource.data.replaces }}"
+    clientReplaces: "{{ .Necessary.resource.client.replaces }}"
+    coldReplaces: "{{ .Necessary.resource.cold.replaces }}"
+    totalReplaces: "{{ add .Necessary.resource.master.replaces .Necessary.resource.data.replaces .Necessary.resource.client.replaces .Necessary.resource.cold.replaces }}"
     pod:
       - env:
           - name: PathRepo
@@ -127,11 +140,15 @@ spec:
         podAntiAffinityTopologKey: kubernetes.io/hostname
         podAntiAffinity: soft
         storage:
-          clientSize: 5Gi
-          coldSize: 5Gi
-          dataSize: 5Gi
-          masterSize: 5Gi
-        middlewareImage: '{{ .Necessary.repository }}/elastic:{{ if contains "6.8" .Necessary.version }}6.8.22-466e79{{ else if eq "7.16.2" .Necessary.version }}7.16.2-466e79{{ else if eq "7.16.3" .Necessary.version }}7.16.3-466e79{{ else if eq "8.11.3" .Necessary.version }}8.11.3-466e79{{ else }}8.13.4-466e79{{ end }}'
+          clientSize: "{{ .Necessary.resource.client.volume.size }}"
+          coldSize: "{{ .Necessary.resource.cold.volume.size }}"
+          dataSize: "{{ .Necessary.resource.data.volume.size }}"
+          masterSize: "{{ .Necessary.resource.master.volume.size }}"
+          clientClass: "{{ .Necessary.resource.client.volume.storageClass }}"
+          coldClass: "{{ .Necessary.resource.cold.volume.storageClass }}"
+          dataClass: "{{ .Necessary.resource.data.volume.storageClass }}"
+          masterClass: "{{ .Necessary.resource.master.volume.storageClass }}"
+        middlewareImage: "{{ .Necessary.repository }}/elastic:7.16.3-466e79"
         monitorImage: "{{ .Necessary.repository }}/es-exporter:v1.6.0"
         hostNetwork: false
         resources:
@@ -170,12 +187,11 @@ spec:
             requests:
               cpu: '"{{ .Necessary.resource.master.requests.cpu }}"'
               memory: '"{{ .Necessary.resource.master.requests.memory }}"'
-        updateStrategy: { }
     projectId: a9927d1581674f27
     repository: "{{ .Necessary.repository }}"
-    type: simple
+    type: complex
     updateStrategy: { }
-    version: '{{ if contains "6.8" .Necessary.version }}6.8.22{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else }}8.11.3{{ end }}'
+    version: "7.16.3"
     esMaster:
     esData:
     esCold:
@@ -216,9 +232,7 @@ spec:
           dataSource: null
           resources:
             requests:
-              storage: "{{ .Necessary.resource.master.volume.size }}"
-          storageClassName: "{{ .Necessary.resource.master.volume.storageClass }}"
-        status: { }
+              storage: "0"
     volumes: { }
   configurations:
     - name: elasticsearch-alertrule
@@ -230,13 +244,13 @@ spec:
     - name: elasticsearch-clusterrolebinding-sa
       values:
         activeActive:
-          enable: false
+          enable:
     - name: elasticsearch-serviceaccount
       values: { }
     - name: elasticsearch-serviceaccount-sa
       values:
         activeActive:
-          enable: false
+          enable:
     - name: elasticsearch-connection-credential
       values:
         elasticPassword: "{{ .Parameters.elasticPass }}"
