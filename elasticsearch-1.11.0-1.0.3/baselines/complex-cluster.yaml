@@ -117,12 +117,12 @@ spec:
     elasticPass: "Hc@Cloud01"
     kibanaImage: "{{ .Necessary.repository }}/kibana:7.16.3"
     elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"
-    kibanaReplicas: "{{ .Necessary.elasticsearchResource.kibana.replaces }}"
-    masterReplaces: "{{ .Necessary.elasticsearchResource.master.replaces }}"
-    dataReplaces: "{{ .Necessary.elasticsearchResource.data.replaces }}"
-    clientReplaces: "{{ .Necessary.elasticsearchResource.client.replaces }}"
-    coldReplaces: "{{ .Necessary.elasticsearchResource.cold.replaces }}"
-    totalReplaces: "{{ add .Necessary.elasticsearchResource.master.replaces .Necessary.elasticsearchResource.data.replaces .Necessary.elasticsearchResource.client.replaces .Necessary.elasticsearchResource.cold.replaces }}"
+    kibanaReplicas: "{{ .Necessary.resource.kibana.replaces }}"
+    masterReplaces: "{{ .Necessary.resource.master.replaces }}"
+    dataReplaces: "{{ .Necessary.resource.data.replaces }}"
+    clientReplaces: "{{ .Necessary.resource.client.replaces }}"
+    coldReplaces: "{{ .Necessary.resource.cold.replaces }}"
+    totalReplaces: "{{ add .Necessary.resource.master.replaces .Necessary.resource.data.replaces .Necessary.resource.client.replaces .Necessary.resource.cold.replaces }}"
     pod:
       - env:
           - name: PathRepo
