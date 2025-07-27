@@ -1,4 +1,4 @@
-middlewareDefinition: elasticsearch-complex-cluster
+middlewareDefinition: elasticsearch-cluster
 values:
   - name: elasticsearch
     path: spec.configurations.elasticsearch-es-config.values.args
