@@ -48,15 +48,6 @@ values:
             value: [0-100000]
           - name: describe
             value: "Recover as long as this many data nodes have joined the cluster."
-      - indices.recovery.max_bytes_per_sec:
-          - name: default
-            value: 40mb
-          - name: isReboot
-            value: y
-          - name: range
-            value: [0-100000]
-          - name: describe
-            value: "Limits total inbound and outbound recovery traffic for each node. Applies to both peer recoveries as well as snapshot recoveries (i.e., restores from a snapshot). Defaults to 40mb unless the node is a dedicated cold or frozen node, in which case the default relates to the total memory available to the node."
       - http.cors.allow-headers:
           - name: default
             value: Authorization
