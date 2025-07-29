@@ -1,5 +1,5 @@
-name: ElasticSearch # 中间件类型
-version: 1.11.0-1.0.5 # 包版本
+name: Elasticsearch # 中间件类型
+version: 1.11.0-1.0.7 # 包版本
 app:
   version: # 中间件支持版本
     - 6.8.22
@@ -11,5 +11,5 @@ app:
   #   - v1
 owner: harmonycloud # 供应商
 type: db # 类型
-chartType: ElasticSearch
-description: CloudDB ElasticSearch数据库 # 描述
+chartType: Elasticsearch
+description: CloudDB Elasticsearch数据库 # 描述
