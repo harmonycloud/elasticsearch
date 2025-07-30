@@ -82,10 +82,10 @@ spec:
     - name: pre-elasticsearch-active-active
       parameters: {}
       exposed: false
-    - name: pre-elasticsearch-hostnetwork
-      parameters:
-        hostNetwork: false
-      exposed: true
+#    - name: pre-elasticsearch-hostnetwork
+#      parameters:
+#        hostNetwork: false
+#      exposed: true
     - name: pre-elasticsearch-tolerations
       parameters:
         tolerations: [ ]
