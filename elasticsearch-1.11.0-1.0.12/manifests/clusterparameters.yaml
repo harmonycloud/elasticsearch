@@ -77,7 +77,7 @@ values:
             value: "To disable swap at the database level, while also setting the session parameter memlock to unlimited."
       - action.auto_create_index:
           - name: default
-            value: true
+            value: "true"
           - name: isReboot
             value: y
           - name: range
