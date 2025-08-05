@@ -1,4 +1,4 @@
-middlewareDefinition: elasticsearch-cluster
+middlewareDefinition: elasticsearch-complex-cluster
 values:
   - name: elasticsearch
     path: spec|configurations|elasticsearch-es-config|values|args
@@ -54,7 +54,7 @@ values:
           - name: isReboot
             value: y
           - name: range
-            value: [X-Requested-With||Content-Type||Content-Length||Authorization||Accept|User-Agent||X-Elastic-Client-Meta]
+            value: [X-Requested-With|Content-Type|Content-Length|Authorization|Accept|User-Agent|X-Elastic-Client-Meta]
           - name: describe
             value: "The header information for setting cross-origin allowance."
       - http.cors.allow-credentials:
