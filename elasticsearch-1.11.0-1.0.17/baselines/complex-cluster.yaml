@@ -74,6 +74,10 @@ spec:
           size: ""
           storageClass: ""  
   preActions:
+    - name: pre-elasticsearch-alertrule-labels
+      parameters:
+        labels: {}
+      exposed: false
     - name: pre-elasticsearch-logging
       parameters:
         fileLogging: true

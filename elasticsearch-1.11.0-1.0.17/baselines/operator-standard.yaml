@@ -1,10 +1,10 @@
 apiVersion: middleware.cn/v1
 kind: MiddlewareOperatorBaseline
 metadata:
-  name: elasticsearch-operator-highly-available
+  name: elasticsearch-operator-standard
   annotations:
-    baselineName: "高可用版"
-    description: "高可用版基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+    baselineName: "标准版"
+    description: "标准版基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
 spec:
   gvks:
     - name: v1alpha1
@@ -22,6 +22,10 @@ spec:
         cpu: "100m"
         memory: "250Mi"
   preActions:
+    - name: pre-elasticsearch-operator-alertrule-labels
+      parameters:
+        labels: {}
+      exposed: false
     - name: pre-elasticsearch-operator-affinity
       parameters:
         podAntiAffinityTopologKey: "kubernetes.io/hostname"
@@ -173,7 +177,7 @@ spec:
             - create
   deployment:
     spec:
-      replicas: 3
+      replicas: 1
       selector:
         matchLabels:
           app.kubernetes.io/name: elasticsearch-operator

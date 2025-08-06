@@ -20,6 +20,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: ElasticSearch instance is unhealthy. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
         - alert: Elasticsearch_Count_of_JVM_GC_Runs
@@ -27,6 +30,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: Count of JVM GC runs > 5 per sec and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
         - alert: Elasticsearch_GC_Run_Time
@@ -34,6 +40,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: GC run time in seconds > 0.3 sec and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
         - alert: Elasticsearch_breakers_tripped
@@ -41,6 +50,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: breakers tripped > 0 and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
         - alert: Elasticsearch_health_timed_out
@@ -48,6 +60,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: Number of cluster health checks timed out > 0 and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
         - alert: ElasticsearchHeapUsageTooHigh
@@ -55,6 +70,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: The heap usage is over 90%,  current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
         - alert: ElasticsearchHeapUsageWarning
@@ -62,6 +80,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'Elasticsearch: The heap usage is over 80%, current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
         - alert: ElasticsearchDiskOutOfSpace
@@ -69,6 +90,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'Elasticsearch: The available disk space is less than 15%,  current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
         - alert: ElasticsearchDiskSpaceLow
@@ -76,6 +100,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'Elasticsearch: The available disk space is less than 30%,  current_value = {{`{{ printf "%.0f" $value }`}}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
         - alert: ElasticsearchClusterRed
@@ -83,6 +110,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'Elasticsearch: The cluster is in red state. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
         - alert: ElasticsearchClusterYellow
@@ -90,6 +120,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'Elasticsearch: The cluster is in yellow state. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
         - alert: ElasticsearchHealthyNodes
@@ -97,6 +130,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'Elasticsearch: Number Healthy Nodes less then number_of_nodes, current_value = {{`{{ $value }`}}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
         - alert: ElasticsearchRelocatingShards
@@ -104,6 +140,9 @@ spec:
           for: 5m
           labels:
             severity: info
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: Elasticsearch is relocating shards,  current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
         - alert: ElasticsearchRelocatingShardsTooLong
@@ -111,6 +150,9 @@ spec:
           for: 15m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: Elasticsearch has been relocating shards for 15min, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
         - alert: ElasticsearchInitializingShards
@@ -118,6 +160,9 @@ spec:
           for: 5m
           labels:
             severity: info
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: Elasticsearch is initializing shards, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
         - alert: ElasticsearchInitializingShardsTooLong
@@ -125,6 +170,9 @@ spec:
           for: 15m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: Elasticsearch has been initializing shards for 15 min, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
         - alert: ElasticsearchUnassignedShards
@@ -132,6 +180,9 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: Elasticsearch has unassigned shards, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
         - alert: ElasticsearchPendingTasks
@@ -139,6 +190,9 @@ spec:
           for: 15m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'ElasticSearch: Elasticsearch has pending tasks. Cluster works slowly, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
         - alert: ElasticsearchOpenFdsUsageTooHigh
@@ -146,5 +200,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            {{- with .Values.labels }}
+            {{ toYaml . }}
+            {{- end }}
           annotations:
             message: 'Elasticsearch: The Open Fds usage is over 75%, current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'

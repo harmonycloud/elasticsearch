@@ -15,11 +15,11 @@ spec:
     version: "7.16.3"
     repository: ""
     password: "Hc@Cloud01"
-#    elasticsearchPort:
-#      exporter: "19114"
-#      http: "9200"
-#      kibana: "5200"
-#      tcp: "9300"
+    #    elasticsearchPort:
+    #      exporter: "19114"
+    #      http: "9200"
+    #      kibana: "5200"
+    #      tcp: "9300"
     resource:
       master:
         limits:
@@ -33,6 +33,10 @@ spec:
           size: ""
           storageClass: ""
   preActions:
+    - name: pre-elasticsearch-alertrule-labels
+      parameters:
+        labels: {}
+      exposed: false
     - name: pre-elasticsearch-logging
       parameters:
         fileLogging: true
@@ -41,10 +45,10 @@ spec:
     - name: pre-elasticsearch-active-active
       parameters: {}
       exposed: false
-#    - name: pre-elasticsearch-hostnetwork
-#      parameters:
-#        hostNetwork: false
-#      exposed: true
+    #    - name: pre-elasticsearch-hostnetwork
+    #      parameters:
+    #        hostNetwork: false
+    #      exposed: true
     - name: pre-elasticsearch-tolerations
       parameters:
         tolerations: []
@@ -56,22 +60,22 @@ spec:
         nodeAffinity: {}
         activeActive: false
       exposed: true
-#    - name: pre-elasticsearch-kibana-tolerations
-#      parameters:
-#        tolerations: []
-#      exposed: true
-#    - name: pre-elasticsearch-kibana-affinity
-#      parameters:
-#        nodeAffinity: {}
-#      exposed: true
-#    - name: pre-elasticsearch-exporter-tolerations
-#      parameters:
-#        tolerations: []
-#      exposed: true
-#    - name: pre-elasticsearch-exporter-affinity
-#      parameters:
-#        nodeAffinity: {}
-#      exposed: true
+  #    - name: pre-elasticsearch-kibana-tolerations
+  #      parameters:
+  #        tolerations: []
+  #      exposed: true
+  #    - name: pre-elasticsearch-kibana-affinity
+  #      parameters:
+  #        nodeAffinity: {}
+  #      exposed: true
+  #    - name: pre-elasticsearch-exporter-tolerations
+  #      parameters:
+  #        tolerations: []
+  #      exposed: true
+  #    - name: pre-elasticsearch-exporter-affinity
+  #      parameters:
+  #        nodeAffinity: {}
+  #      exposed: true
   parameters:
     clusterMode: simple
     clusterName: "{{ .Globe.Name }}"
@@ -143,13 +147,13 @@ spec:
             requests:
               cpu: '"{{ .Necessary.resource.master.requests.cpu }}"'
               memory: '"{{ .Necessary.resource.master.requests.memory }}"'
-        updateStrategy: { }
+        updateStrategy: {}
     projectId: a9927d1581674f27
     repository: "{{ .Necessary.repository }}"
     type: simple
-    updateStrategy: { }
+    updateStrategy: {}
     version: '{{ if contains "6.8" .Necessary.version }}6.8.22{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else }}8.11.3{{ end }}'
-    esMaster: 
+    esMaster:
     esData:
     esCold:
     esClient:
@@ -190,21 +194,21 @@ spec:
           resources:
             requests:
               storage: "0"
-        status: { }
-    volumes: { }
+        status: {}
+    volumes: {}
   configurations:
     - name: elasticsearch-alertrule
-      values: { }
+      values: {}
     - name: elasticsearch-clusterrole
-      values: { }
+      values: {}
     - name: elasticsearch-clusterrolebinding
-      values: { }
+      values: {}
     - name: elasticsearch-clusterrolebinding-sa
       values:
         activeActive:
           enable: false
     - name: elasticsearch-serviceaccount
-      values: { }
+      values: {}
     - name: elasticsearch-serviceaccount-sa
       values:
         activeActive:
@@ -219,12 +223,12 @@ spec:
           esHttpPort: "{{ .Parameters.esHttpPort }}"
     - name: elasticsearch-es-config
       values:
-        args: { }
+        args: {}
         version: "{{ .Parameters.version }}"
         port:
           esHttpPort: "{{ .Parameters.esHttpPort }}"
           esTcpPort: "{{ .Parameters.esTcpPort }}"
-        additionArgs: { }
+        additionArgs: {}
     - name: elasticsearch-kibana-config
       values:
         port:
@@ -232,4 +236,4 @@ spec:
         version: "{{ .Parameters.version }}"
         elasticPassword: "{{ .Parameters.elasticPass }}"
     - name: elasticsearch-servicemonitor
-      values: { }
+      values: {}
