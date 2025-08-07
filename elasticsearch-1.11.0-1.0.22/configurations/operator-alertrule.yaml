@@ -30,7 +30,7 @@ spec:
                 project: zeus
                 subject: operator
                 {{- with .Values.labels }}
-                {{ toYaml . | nindent 12 }}
+                {{- toYaml . | nindent 12 }}
                 {{- end }}
             - alert: elasticsearchOperatorMemoryUsageHigh
               annotations:
@@ -42,7 +42,7 @@ spec:
                 project: zeus
                 subject: operator
                 {{- with .Values.labels }}
-                {{ toYaml . | nindent 12 }}
+                {{- toYaml . | nindent 12 }}
                 {{- end }}
             - alert: elasticsearchOperatorInstanceNotRunning
               annotations:
@@ -55,7 +55,7 @@ spec:
                 project: zeus
                 subject: operator
                 {{- with .Values.labels }}
-                {{ toYaml . | nindent 12 }}
+                {{- toYaml . | nindent 12 }}
                 {{- end }}
             - alert: multipleElasticsearchOperatorInstanceNotRunning
               annotations:
@@ -67,5 +67,5 @@ spec:
                 project: zeus
                 subject: operator
                 {{- with .Values.labels }}
-                {{ toYaml . | nindent 12 }}
+                {{- toYaml . | nindent 12 }}
                 {{- end }}
