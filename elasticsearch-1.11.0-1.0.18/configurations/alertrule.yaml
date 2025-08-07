@@ -20,6 +20,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -30,6 +32,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -40,6 +44,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -50,6 +56,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -60,6 +68,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -70,6 +80,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -80,6 +92,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -90,6 +104,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -100,6 +116,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -110,6 +128,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -120,6 +140,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -130,6 +152,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -140,6 +164,8 @@ spec:
           for: 5m
           labels:
             severity: info
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -150,6 +176,8 @@ spec:
           for: 15m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -160,6 +188,8 @@ spec:
           for: 5m
           labels:
             severity: info
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -170,6 +200,8 @@ spec:
           for: 15m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -180,6 +212,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -190,6 +224,8 @@ spec:
           for: 15m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
@@ -200,6 +236,8 @@ spec:
           for: 5m
           labels:
             severity: warning
+            project: zeus
+            subject: middleware
             {{- with .Values.labels }}
             {{ toYaml . }}
             {{- end }}
