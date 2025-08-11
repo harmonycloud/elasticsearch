@@ -127,7 +127,7 @@ spec:
     esHttpPort: 9200
     esKibanaPort: 5200
     esTcpPort: 9300
-    elasticPass: "Hc@Cloud01"
+    elasticPass: "{{ .Necessary.password }}"
     kibanaImage: "{{ .Necessary.repository }}/kibana:7.16.3"
     elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"
     kibanaReplicas: "{{ .Necessary.resource.kibana.replicas }}"
