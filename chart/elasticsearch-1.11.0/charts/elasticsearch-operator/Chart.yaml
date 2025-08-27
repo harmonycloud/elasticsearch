@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: 1.11.0
-description: CloudDB Elasticsearch数据库
-name: elasticsearch-operator
-type: application
-version: 1.11.0
