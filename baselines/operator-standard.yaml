@@ -195,7 +195,7 @@ spec:
         spec:
           containers:
             - name: elasticsearch-operator
-              image: "{{ .Globe.repository }}/{{ .Globe.project }}/operator-manager:d9c61c4"
+              image: '{{ if ne .Globe.repository "" }}{{ .Globe.repository }}/{{ end }}{{ .Globe.project }}/operator-manager:d9c61c4'
               args:
                 - -leader-elect=true
               imagePullPolicy: IfNotPresent
