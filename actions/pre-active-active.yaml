@@ -21,7 +21,7 @@ spec:
           - "jsonpath='{.metadata.labels}'"
           - "|"
           - "awk"
-          - '''/availableDomain/ {found=1; exit} END {if (found) print \"true\"; else print \"\"}'''
+          - '''/availableDomain/ {found=1; exit} END {if (found) print "true"; else print ""}'''
     - name: activeActive
       type: "KubectlEdit" # KubectlGet、KubectlEdit、KubectlExec、Exec、HTTP
       cue: |
