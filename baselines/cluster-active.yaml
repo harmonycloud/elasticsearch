@@ -1,12 +1,13 @@
 apiVersion: middleware.cn/v1
 kind: MiddlewareBaseline
 metadata:
-  name: elasticsearch-cluster
+  name: elasticsearch-cluster-active
   annotations:
     OperationType: Create
     developerPass: es
     baselineName: "集群模式"
     description: "集群模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+    active: "3"
 spec:
   operatorBaseline:
     name: elasticsearch-operator-standard
@@ -29,9 +30,7 @@ spec:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
         replicas: '{"type":"int","label":"实例数","required":true,"description":"节点数量，建议至少2个以保证高可用","default":3,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
-        volume:
-          size: '{"type":"int","label":"存储大小","required":true,"description":"请输入存储大小","pattern":"^[1-9]\\d*$","placeholder":"请输入存储大小"}'
-          storageClass: '{"type":"storageClass","label":"存储类","required":true,"description":"请选择存储","placeholder":"请选择存储"}'
+        volumes: ""
   preActions:
     - name: pre-elasticsearch-alertrule-labels
       parameters:
@@ -51,7 +50,7 @@ spec:
         podAntiAffinityTopologKey: "kubernetes.io/hostname"
         podAntiAffinity: "soft"
         nodeAffinity: {}
-        activeActive: false
+        activeActive: true
       exposed: true
   #    - name: pre-elasticsearch-kibana-tolerations
   #      parameters:
@@ -99,8 +98,8 @@ spec:
           dataSize: 5Gi
           clientSize: 5Gi
           coldSize: 5Gi
-          masterSize: "{{ .Necessary.resource.master.volume.size }}"
-          masterClass: "{{ .Necessary.resource.master.volume.storageClass }}"
+          masterSize: '{{ index .Necessary.resource.master.volumes 0 "size" }}'
+          masterClass: "{{ range $i, $v := .Necessary.resource.master.volumes }}{{ if $i }},{{ end }}{{ $v.storageClass }}{{ end }}"
         middlewareImage: '{{ .Necessary.repository }}/elastic:{{ if contains "6.8" .Necessary.version }}6.8.22-466e79{{ else if eq "7.16.2" .Necessary.version }}7.16.2-466e79{{ else if eq "7.16.3" .Necessary.version }}7.16.3-466e79{{ else if eq "8.11.3" .Necessary.version }}8.11.3-466e79{{ else }}8.13.4-466e79{{ end }}'
         monitorImage: "{{ .Necessary.repository }}/es-exporter:v1.6.0"
         hostNetwork: false
@@ -164,7 +163,10 @@ spec:
                       fieldRef:
                         apiVersion: v1
                         fieldPath: spec.nodeName
+                  - name: ActiveActive
+                    value: "true"
                 name: "{{ .Globe.Name }}-init"
+            serviceAccountName: "{{ .Globe.Name }}-sa"
     deploymentComponent:
       kibana:
         spec:
@@ -199,13 +201,13 @@ spec:
     - name: elasticsearch-clusterrolebinding-sa
       values:
         activeActive:
-          enable: false
+          enable: true
     - name: elasticsearch-serviceaccount
       values: {}
     - name: elasticsearch-serviceaccount-sa
       values:
         activeActive:
-          enable: false
+          enable: true
     - name: elasticsearch-connection-credential
       values:
         elasticPassword: "{{ .Parameters.elasticPass }}"

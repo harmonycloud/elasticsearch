@@ -1,12 +1,13 @@
 apiVersion: middleware.cn/v1
 kind: MiddlewareBaseline
 metadata:
-  name: elasticsearch-complex-cluster
+  name: elasticsearch-complex-cluster-active
   annotations:
     OperationType: Create
     developerPass: es
     baselineName: "混合模式"
     description: "混合模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+    active: "3"
 spec:
   operatorBaseline:
     name: elasticsearch-operator-standard
@@ -29,9 +30,7 @@ spec:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
         replicas: '{"type":"int","label":"实例数","required":true,"description":"client节点数量，建议至少2个以保证高可用","default":2,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
-        volume:
-          size: '{"type":"int","label":"存储大小","required":true,"description":"请输入存储大小","pattern":"^[1-9]\\d*$","placeholder":"请输入存储大小"}'
-          storageClass: '{"type":"storageClass","label":"存储类","required":true,"description":"请选择存储","placeholder":"请选择存储"}'
+        volumes: ""
       cold:
         limits:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
@@ -40,9 +39,7 @@ spec:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
         replicas: '{"type":"int","label":"实例数","required":true,"description":"cold节点数量，建议至少2个以保证高可用","default":3,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
-        volume:
-          size: '{"type":"int","label":"存储大小","required":true,"description":"请输入存储大小","pattern":"^[1-9]\\d*$","placeholder":"请输入存储大小"}'
-          storageClass: '{"type":"storageClass","label":"存储类","required":true,"description":"请选择存储","placeholder":"请选择存储"}'
+        volumes: ""
       data:
         limits:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
@@ -51,9 +48,7 @@ spec:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
         replicas: '{"type":"int","label":"实例数","required":true,"description":"data节点数量，建议至少2个以保证高可用","default":3,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
-        volume:
-          size: '{"type":"int","label":"存储大小","required":true,"description":"请输入存储大小","pattern":"^[1-9]\\d*$","placeholder":"请输入存储大小"}'
-          storageClass: '{"type":"storageClass","label":"存储类","required":true,"description":"请选择存储","placeholder":"请选择存储"}'
+        volumes: ""
       kibana:
         limits:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"0.5"}'
@@ -70,9 +65,7 @@ spec:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
         replicas: '{"type":"int","label":"实例数","required":true,"description":"master节点数量","default":3,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
-        volume:
-          size: '{"type":"int","label":"存储大小","required":true,"description":"请输入存储大小","pattern":"^[1-9]\\d*$","placeholder":"请输入存储大小"}'
-          storageClass: '{"type":"storageClass","label":"存储类","required":true,"description":"请选择存储","placeholder":"请选择存储"}'
+        volumes: ""
   preActions:
     - name: pre-elasticsearch-alertrule-labels
       parameters:
@@ -92,7 +85,7 @@ spec:
         podAntiAffinityTopologKey: "kubernetes.io/hostname"
         podAntiAffinity: "soft"
         nodeAffinity: { }
-        activeActive: false
+        activeActive: true
       exposed: true
     # - name: pre-elasticsearch-kibana-affinity
     #   parameters:
@@ -137,14 +130,14 @@ spec:
         podAntiAffinityTopologKey: kubernetes.io/hostname
         podAntiAffinity: soft
         storage:
-          clientSize: "{{ .Necessary.resource.client.volume.size }}"
-          coldSize: "{{ .Necessary.resource.cold.volume.size }}"
-          dataSize: "{{ .Necessary.resource.data.volume.size }}"
-          masterSize: "{{ .Necessary.resource.master.volume.size }}"
-          clientClass: "{{ .Necessary.resource.client.volume.storageClass }}"
-          coldClass: "{{ .Necessary.resource.cold.volume.storageClass }}"
-          dataClass: "{{ .Necessary.resource.data.volume.storageClass }}"
-          masterClass: "{{ .Necessary.resource.master.volume.storageClass }}"
+          clientSize: '{{ index .Necessary.resource.client.volumes 0 "size" }}'
+          coldSize: '{{ index .Necessary.resource.cold.volumes 0 "size" }}'
+          dataSize: '{{ index .Necessary.resource.data.volumes 0 "size" }}'
+          masterSize: '{{ index .Necessary.resource.master.volumes 0 "size" }}'
+          clientClass: '{{ range $i, $v := .Necessary.resource.client.volumes }}{{ if $i }},{{ end }}{{ $v.storageClass }}{{ end }}'
+          coldClass: '{{ range $i, $v := .Necessary.resource.cold.volumes }}{{ if $i }},{{ end }}{{ $v.storageClass }}{{ end }}'
+          dataClass: '{{ range $i, $v := .Necessary.resource.data.volumes }}{{ if $i }},{{ end }}{{ $v.storageClass }}{{ end }}'
+          masterClass: '{{ range $i, $v := .Necessary.resource.master.volumes }}{{ if $i }},{{ end }}{{ $v.storageClass }}{{ end }}'
         middlewareImage: "{{ .Necessary.repository }}/elastic:7.16.3-466e79"
         monitorImage: "{{ .Necessary.repository }}/es-exporter:v1.6.0"
         hostNetwork: false
@@ -207,7 +200,10 @@ spec:
                       fieldRef:
                         apiVersion: v1
                         fieldPath: spec.nodeName
+                  - name: ActiveActive
+                    value: "true"
                 name: "{{ .Globe.Name }}-init"
+            serviceAccountName: "{{ .Globe.Name }}-sa"
     deploymentComponent:
       kibana:
         spec:
@@ -241,13 +237,13 @@ spec:
     - name: elasticsearch-clusterrolebinding-sa
       values:
         activeActive:
-          enable:
+          enable: true
     - name: elasticsearch-serviceaccount
       values: { }
     - name: elasticsearch-serviceaccount-sa
       values:
         activeActive:
-          enable:
+          enable: true
     - name: elasticsearch-connection-credential
       values:
         elasticPassword: "{{ .Parameters.elasticPass }}"
