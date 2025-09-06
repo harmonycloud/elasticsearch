@@ -12,4 +12,4 @@ app:
 owner: harmonycloud # 供应商
 type: db # 类型
 chartType: Elasticsearch
-description: Elasticsearch数据库 # 描述
+description: Elasticsearch 数据库 # 描述
