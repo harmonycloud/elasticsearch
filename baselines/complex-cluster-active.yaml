@@ -29,7 +29,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
-        replicas: '{"type":"int","label":"实例数","required":true,"description":"client节点数量，建议至少2个以保证高可用","default":2,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
+        replicas: '{"type":"int","label":"实例数","required":true,"description":"client节点数量，请输入2或2以上的偶数","default":2,"pattern":"^2$|^[468]\\d*[02468]$|^[1-9]\\d*[02468]$","placeholder":"请输入实例数"}'
         volumes: ""
       cold:
         limits:
@@ -38,7 +38,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
-        replicas: '{"type":"int","label":"实例数","required":true,"description":"cold节点数量，建议至少2个以保证高可用","default":3,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
+        replicas: '{"type":"int","label":"实例数","required":true,"description":"cold节点数量，请输入2或2以上的偶数","default":2,"pattern":"^2$|^[468]\\d*[02468]$|^[1-9]\\d*[02468]$","placeholder":"请输入实例数"}'
         volumes: ""
       data:
         limits:
@@ -47,7 +47,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
-        replicas: '{"type":"int","label":"实例数","required":true,"description":"data节点数量，建议至少2个以保证高可用","default":3,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
+        replicas: '{"type":"int","label":"实例数","required":true,"description":"data节点数量，请输入4或4以上的偶数","default":4,"pattern":"^[468]\\d*[02468]$|^[468]$|^[1-9]\\d*[02468]$","placeholder":"请输入实例数"}'
         volumes: ""
       kibana:
         limits:
@@ -56,7 +56,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"0.5"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"1"}'
-        replicas: '{"type":"int","label":"实例数","required":true,"description":"kibana节点数量","default":1,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
+        replicas: '{"type":"int","label":"实例数","required":true,"description":"kibana节点数量,至少为1","default":1,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
       master:
         limits:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
@@ -64,7 +64,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
           memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
-        replicas: '{"type":"int","label":"实例数","required":true,"description":"master节点数量","default":3,"pattern":"^[1-9]\\d*$","placeholder":"请输入实例数"}'
+        replicas: '{"type":"int","label":"实例数","required":true,"description":"master节点数量，请输入3或3以上的奇数","default":3,"pattern":"^([3-9]|[1-9]\\d*[13579])$","placeholder":"请输入实例数"}'
         volumes: ""
   preActions:
     - name: pre-elasticsearch-alertrule-labels
