@@ -87,7 +87,7 @@ spec:
     esHttpPort: 9200
     esKibanaPort: 5200
     esTcpPort: 9300
-    elasticPass: "{{ .Necessary.password }}"
+    elasticPass: '"{{ .Necessary.password }}"'
     kibanaImage: '{{ .Necessary.repository }}/kibana:{{ if contains "6.8" .Necessary.version }}6.8.10{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else if eq "8.11.3" .Necessary.version }}8.11.3{{ else }}8.13.4{{ end }}'
     elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"
     kibanaReplicas: 1
@@ -219,10 +219,10 @@ spec:
           enable: true
     - name: elasticsearch-connection-credential
       values:
-        elasticPassword: "{{ .Parameters.elasticPass }}"
+        elasticPassword: '"{{ .Parameters.elasticPass }}"'
     - name: elasticsearch-checkhealth-config
       values:
-        elasticPassword: "{{ .Parameters.elasticPass }}"
+        elasticPassword: '"{{ .Parameters.elasticPass }}"'
         port:
           esHttpPort: "{{ .Parameters.esHttpPort }}"
     - name: elasticsearch-es-config
@@ -238,6 +238,6 @@ spec:
         port:
           esKibanaPort: "{{ .Parameters.esKibanaPort }}"
         version: "{{ .Parameters.version }}"
-        elasticPassword: "{{ .Parameters.elasticPass }}"
+        elasticPassword: '"{{ .Parameters.elasticPass }}"'
     - name: elasticsearch-servicemonitor
       values: {}
