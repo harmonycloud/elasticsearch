@@ -32,14 +32,14 @@ spec:
     resource:
       master:
         limits:
-          cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额，单位为Core","placeholder":"请输入自定义配额，单位为Core","default":"1"}'
-          memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额，单位为Gi","placeholder":"请输入自定义配额，单位为Gi","default":"4"}'
+          cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额，单位为Core","placeholder":"请输入自定义配额，单位为Core","default":"1","min":"0.1"}'
+          memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额，单位为Gi","placeholder":"请输入自定义配额，单位为Gi","default":"4","min":"0.1"}'
         requests:
-          cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额，单位为Core","placeholder":"请输入自定义配额，单位为Core","default":"1"}'
-          memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额，单位为Gi","placeholder":"请输入自定义配额，单位为Gi","default":"4"}'
-        replicas: '{"type":"int","label":"实例数","required":true,"description":"节点数量，建议至少3个以保证高可用","default":3,"pattern":"^[3-9]\\d*$","placeholder":"请输入实例数"}'
+          cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额，单位为Core","placeholder":"请输入自定义配额，单位为Core","default":"1","min":"0.1"}'
+          memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额，单位为Gi","placeholder":"请输入自定义配额，单位为Gi","default":"4","min":"0.1"}'
+        replicas: '{"type":"int","label":"实例数","required":true,"description":"节点数量，建议至少3个以保证高可用","default":3,"pattern":"^[3-9]\\d*$","placeholder":"请输入实例数","min":"3"}'
         volume:
-          size: '{"type":"int","label":"存储大小","required":true,"description":"请输入存储大小","pattern":"^[1-9]\\d*$","placeholder":"请输入存储大小"}'
+          size: '{"type":"int","label":"存储大小","required":true,"description":"请输入存储大小","pattern":"^[1-9]\\d*$","placeholder":"请输入存储大小","min":"0.1"}'
           storageClass: '{"type":"storageClass","label":"存储类","required":true,"description":"请选择存储","placeholder":"请选择存储"}'
   preActions:
     - name: pre-elasticsearch-alertrule-labels

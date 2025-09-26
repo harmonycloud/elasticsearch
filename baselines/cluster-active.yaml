@@ -33,12 +33,12 @@ spec:
     resource:
       master:
         limits:
-          cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
-          memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
+          cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1","min":"0.1"}'
+          memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4","min":"0.1"}'
         requests:
-          cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1"}'
-          memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4"}'
-        replicas: '{"type":"int","label":"实例数","required":true,"description":"节点数量，请输入3或3以上的奇数","default":3,"pattern":"^(3|5|7|9|[1-9]\\d*[13579])$","placeholder":"请输入实例数"}'
+          cpu: '{"type":"string","label":"CPU","required":true,"description":"请输入自定义配额,单位为Core","placeholder":"请输入自定义配额,单位为Core","default":"1","min":"0.1"}'
+          memory: '{"type":"string","label":"内存","required":true,"description":"请输入自定义配额,单位为Gi","placeholder":"请输入自定义配额,单位为Gi","default":"4","min":"0.1"}'
+        replicas: '{"type":"int","label":"实例数","required":true,"description":"节点数量，请输入3或3以上的奇数","default":3,"pattern":"^(3|5|7|9|[1-9]\\d*[13579])$","placeholder":"请输入实例数","min":"3"}'
         volumes: ""
   preActions:
     - name: pre-elasticsearch-alertrule-labels
