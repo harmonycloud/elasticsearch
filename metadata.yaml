@@ -16,3 +16,4 @@ description: Elasticsearch 数据库 # 描述
 changes: |
   1.11.0-1.4.0
     2025.10.14: 修改双活模式命名
+    2025.10.16: operator默认推荐资源规格

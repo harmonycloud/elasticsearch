@@ -230,11 +230,11 @@ spec:
                 timeoutSeconds: 5
               resources:
                 limits:
-                  cpu: '"{{ .Globe.resource.limits.cpu }}"'
-                  memory: '"{{ .Globe.resource.limits.memory }}"'
+                  cpu: "200m"
+                  memory: "512Mi"
                 requests:
-                  cpu: '"{{ .Globe.resource.requests.cpu }}"'
-                  memory: '"{{ .Globe.resource.requests.memory }}"'
+                  cpu: "100m"
+                  memory: "256Mi"
           serviceAccount: "{{ .Globe.Name }}-elasticsearch-operator"
   configurations:
     - name: "crd-elasticsearch"
