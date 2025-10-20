@@ -76,6 +76,12 @@ spec:
         replicas: '{"type":"int","label":"实例数","required":true,"description":"master节点数量，请输入3或3以上的奇数","default":3,"pattern":"^(3|5|7|9|[1-9]\\d*[13579])$","placeholder":"请输入实例数"}'
         volumes: ""
   preActions:
+    - name: pre-elasticsearch-heimdallr-hdpool
+      parameters:
+        networkCardList: [ ]
+        annotations: { }
+      fixed: false
+      exposed: true
     - name: pre-elasticsearch-alertrule-labels
       parameters:
         labels: {}

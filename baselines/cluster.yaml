@@ -42,6 +42,12 @@ spec:
           size: '{"type":"int","label":"存储大小","required":true,"description":"请输入存储大小","pattern":"^[1-9]\\d*$","placeholder":"请输入存储大小","min":"0.1"}'
           storageClass: '{"type":"storageClass","label":"存储类","required":true,"description":"请选择存储","placeholder":"请选择存储"}'
   preActions:
+    - name: pre-elasticsearch-heimdallr-hdpool
+      parameters:
+        networkCardList: [ ]
+        annotations: { }
+      fixed: false
+      exposed: true
     - name: pre-elasticsearch-alertrule-labels
       parameters:
         labels: {}
