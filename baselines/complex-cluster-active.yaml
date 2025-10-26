@@ -13,7 +13,7 @@ spec:
     name: elasticsearch-operator-standard
     gvkName: v1alpha1
   necessary:
-    version: '{"type":"version","label":"版本","required":true,"default":"7.16.3"}'
+    version: '{"type":"version","label":"版本","required":true,"default":"7.17.28"}'
     repository: ""
     password: |
       {
@@ -123,7 +123,7 @@ spec:
     esKibanaPort: 5200
     esTcpPort: 9300
     elasticPass: '"{{ .Necessary.password }}"'
-    kibanaImage: "{{ .Necessary.repository }}/kibana:7.16.3"
+    kibanaImage: '{{ .Necessary.repository }}/kibana:{{ if contains "6.8" .Necessary.version }}6.8.10{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else if eq "7.17.28" .Necessary.version }}7.17.28{{ else if eq "8.11.3" .Necessary.version }}8.11.3{{ else }}8.13.4{{ end }}'
     elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"
     kibanaReplicas: "{{ .Necessary.resource.kibana.replicas }}"
     masterReplaces: "{{ .Necessary.resource.master.replicas }}"
@@ -147,7 +147,7 @@ spec:
           coldClass: '{{ range $i, $v := .Necessary.resource.cold.volumes }}{{ if $i }},{{ end }}{{ $v.storageClass }}{{ end }}'
           dataClass: '{{ range $i, $v := .Necessary.resource.data.volumes }}{{ if $i }},{{ end }}{{ $v.storageClass }}{{ end }}'
           masterClass: '{{ range $i, $v := .Necessary.resource.master.volumes }}{{ if $i }},{{ end }}{{ $v.storageClass }}{{ end }}'
-        middlewareImage: "{{ .Necessary.repository }}/elastic:7.16.3-466e79"
+        middlewareImage: '{{ .Necessary.repository }}/elastic:{{ if contains "6.8" .Necessary.version }}6.8.22-466e79{{ else if eq "7.16.2" .Necessary.version }}7.16.2-466e79{{ else if eq "7.16.3" .Necessary.version }}7.16.3-466e79{{ else if eq "7.17.28" .Necessary.version }}7.17.28{{ else if eq "8.11.3" .Necessary.version }}8.11.3-466e79{{ else }}8.13.4-751e{{ end }}'
         monitorImage: "{{ .Necessary.repository }}/es-exporter:v1.6.0"
         hostNetwork: false
         resources:
@@ -190,7 +190,7 @@ spec:
     repository: "{{ .Necessary.repository }}"
     type: complex
     updateStrategy: { }
-    version: "7.16.3"
+    version: '{{ if contains "6.8" .Necessary.version }}6.8.22{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else if eq "7.17.28" .Necessary.version }}7.17.28{{ else }}8.11.3{{ end }}'
     esMaster:
     esData:
     esCold:
