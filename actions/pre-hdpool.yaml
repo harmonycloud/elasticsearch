@@ -23,7 +23,9 @@ spec:
                   spec: {
                     template: {
                       metadata: {
-                        annotations: {{ toCue .Necessary.annotations }}
+                        {{- with .Necessary.annotations }}
+                        annotations: {{ toCue . }}
+                        {{- end }
                       }
                     }
                   }
@@ -33,7 +35,9 @@ spec:
                     spec: {
                       template: {
                         metadata: {
-                          annotations: {{ toCue .Necessary.annotations }}
+                          {{- with .Necessary.annotations }}
+                          annotations: {{ toCue . }}
+                          {{- end }}
                         }
                       }
                     }
@@ -42,7 +46,9 @@ spec:
                     spec: {
                       template: {
                         metadata: {
-                          annotations: {{ toCue .Necessary.annotations }}
+                          {{- with .Necessary.annotations }}
+                          annotations: {{ toCue . }}
+                          {{- end }}
                         }
                       }
                     }
