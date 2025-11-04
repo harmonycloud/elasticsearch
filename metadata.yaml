@@ -1,10 +1,11 @@
 name: Elasticsearch # 中间件类型
-version: 1.11.0-1.4.0 # 包版本
+version: 1.11.2-1.0.0 # 包版本
 app:
   version: # 中间件支持版本
     - "6.8.22"
     - "7.16.3"
     - "7.16.2"
+    - "7.17.28"
     - "8.11.3"
     - "8.13.4"
   # deprecatedVersion: # 过期版本
