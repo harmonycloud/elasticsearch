@@ -1,5 +1,5 @@
 name: Elasticsearch # 中间件类型
-version: 1.11.2-1.1.1 # 包版本
+version: 1.11.2-1.2.1 # 包版本
 app:
   version: # 中间件支持版本
     - "6.8.22"
@@ -13,9 +13,11 @@ app:
 owner: HarmonyCloud # 供应商
 type: db # 类型
 chartType: Elasticsearch
-description: Elasticsearch 数据库 # 描述
+description: Elasticsearch Database # 描述
 changes: |
   1.11.0-1.4.0
     2025.10.14: 修改双活模式命名
     2025.10.16: operator默认推荐资源规格
     2025.10.20: 添加随机ip池
+  1.11.2-1.2.1
+    2025.12.15: 添加i18n翻译
