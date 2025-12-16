@@ -5,8 +5,8 @@ metadata:
   annotations:
     OperationType: Create
     developerPass: es
-    baselineName: "混合模式-双活"
-    description: "混合模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+    baselineName: "Mixed Mode A-A"
+    description: "Mixed Mode Baseline, incorporating core functionality and essential dependencies, is tailored for rapid deployment and fundamental application scenarios. It delivers stable and reliable performance, and is designed for ease of extension and maintenance."
     active: "3"
 spec:
   operatorBaseline:

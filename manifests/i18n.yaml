@@ -3,8 +3,11 @@ baselineName:
     name-zh: "集群模式"
   - name: "Cluster Mode A-A"
     name-zh: "集群模式-双活"
-  - name: "Cluster Proxy Mode"
-    name-zh: "集群代理模式"
+  - name: "Mixed Mode"
+    name-zh: "混合模式"
+  - name: "Mixed Mode A-A"
+    name-zh: "混合模式-双活"
+
   - name: "Standard"
     name-zh: "标准版"
   - name: "HighAvailability"
@@ -15,13 +18,15 @@ description:
 
   - name: "Cluster Mode Baseline, incorporating core functionality and essential dependencies, is tailored for rapid deployment and fundamental application scenarios. It delivers stable and reliable performance, and is designed for ease of extension and maintenance."
     name-zh: "集群模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+  - name: "Mixed Mode Baseline, incorporating core functionality and essential dependencies, is tailored for rapid deployment and fundamental application scenarios. It delivers stable and reliable performance, and is designed for ease of extension and maintenance."
+    name-zh: "混合模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+
   - name: "High Availability/HA Baseline,incorporating core functionality and essential dependencies, is tailored for rapid deployment and fundamental application scenarios. It delivers stable and reliable performance, and is designed for ease of extension and maintenance."
     name-zh: "高可用版基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
 
   - name: "Standard Baseline,incorporating core functionality and essential dependencies, is tailored for rapid deployment and fundamental application scenarios. It delivers stable and reliable performance, and is designed for ease of extension and maintenance."
     name-zh: "标准版基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
-  - name: "Cluster Proxy Baseline,incorporating core functionality and essential dependencies, is tailored for rapid deployment and fundamental application scenarios. It delivers stable and reliable performance, and is designed for ease of extension and maintenance."
-    name-zh: "集群代理模式基线,包含核心功能和必要依赖,适用于快速部署和基本应用场景,稳定可靠,易于扩展和维护."
+
 
 
 
