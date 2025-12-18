@@ -4,6 +4,7 @@ metadata:
   name: elasticsearch-alertrule
 spec:
   template: |
+    {{- if  .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" }}
     apiVersion: monitoring.coreos.com/v1
     kind: PrometheusRule
     metadata:
@@ -243,3 +244,4 @@ spec:
             {{- end }}
           annotations:
             message: 'Elasticsearch: The Open Fds usage is over 75%, current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+    {{- end }}
