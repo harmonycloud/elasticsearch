@@ -65,6 +65,8 @@ description:
     name-zh: "master节点数量，请输入3或3以上的奇数"
   - name: "Number of cold nodes, please enter an even number greater than or equal to 2"
     name-zh: "cold节点数量，请输入2或2以上的偶数"
+  - name: "Number of Coordinator nodes, please enter an even number greater than or equal to 2"
+    name-zh: "Coordinator节点数量，请输入2或2以上的偶数"
   - name: "Number of data nodes, please enter an even number greater than or equal to 4"
     name-zh: "data节点数量，请输入4或4以上的偶数"
 

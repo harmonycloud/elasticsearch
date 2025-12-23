@@ -37,7 +37,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"1"}'
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4"}'
-        replicas: '{"type":"int","label":"Replicas","required":true,"description":"client节点数量，请输入2或2以上的偶数","default":2,"pattern":"^(?:[2468]|[1-9]\\d*[02468])$","placeholder":"Please enter Instances"}'
+        replicas: '{"type":"int","label":"Replicas","required":true,"description":"Number of Coordinator nodes, please enter an even number greater than or equal to 2","default":2,"pattern":"^(?:[2468]|[1-9]\\d*[02468])$","placeholder":"Please enter Instances"}'
         volumes: ""
       cold:
         limits:
