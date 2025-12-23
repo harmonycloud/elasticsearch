@@ -52,8 +52,8 @@ description:
 
   - name: "The minimum value for client count is 1"
     name-zh: "client节点数量，至少为1"
-  - name: "The minimum value for cold count is 1"
-    name-zh: "cold节点数量，至少为1"
+  - name: "The minimum value for Coordinator count is 1"
+    name-zh: "Coordinator 节点数量，至少为1"
   - name: "The minimum value for kibana count is 1"
     name-zh: "kibana节点数量，至少为1"
   - name: "The minimum value for master count is 3"
