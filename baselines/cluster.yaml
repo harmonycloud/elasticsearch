@@ -5,6 +5,7 @@ metadata:
   annotations:
     OperationType: Create
     developerPass: es
+    mode: "HA"
     baselineName: "Cluster Mode"
     description: "Cluster Mode Baseline, incorporating core functionality and essential dependencies, is tailored for rapid deployment and fundamental application scenarios. It delivers stable and reliable performance, and is designed for ease of extension and maintenance."
 spec:
