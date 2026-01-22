@@ -30,7 +30,7 @@ spec:
       parameters:
         podAntiAffinityTopologKey: "kubernetes.io/hostname"
         podAntiAffinity: "soft"
-        nodeAffinity: [ ]
+        nodeAffinity: {}
       exposed: true
     - name: pre-elasticsearch-operator-tolerations
       parameters:
