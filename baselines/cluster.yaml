@@ -39,7 +39,7 @@ spec:
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4","min":"0.1"}'
         replicas: '{"type":"int","label":"Replicas","required":true,"description":"Nodes,It is recommended to have at least 3 to ensure high availability.","default":3,"pattern":"^[3-9]\\d*$","placeholder":"Please enter Instances","min":"3"}'
         volume:
-          size: '{"type":"int","label":"StorageSize","required":true,"description":"Please enter the storage size","pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size","min":"0.1"}'
+          size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size","min":"0.1"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please enter Instances"}'
   preActions:
     - name: pre-elasticsearch-heimdallr-hdpool

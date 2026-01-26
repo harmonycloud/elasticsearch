@@ -38,7 +38,7 @@ spec:
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4"}'
         replicas: '{"type":"int","label":"Replicas","required":true,"description":"The minimum value for Coordinator count is 1","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter Instances"}'
         volume:
-          size: '{"type":"int","label":"StorageSize","required":true,"description":"Please enter the storage size","pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
+          size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please select storage"}'
       cold:
         limits:
@@ -49,7 +49,7 @@ spec:
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4"}'
         replicas: '{"type":"int","label":"Replicas","required":true,"description":"The minimum value for cold count is 1","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter Instances"}'
         volume:
-          size: '{"type":"int","label":"StorageSize","required":true,"description":"Please enter the storage size","pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
+          size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please select storage"}'
       data:
         limits:
@@ -60,7 +60,7 @@ spec:
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4"}'
         replicas: '{"type":"int","label":"Replicas","required":true,"description":"The minimum value for data count is 3","default":3,"pattern":"^[3-9]\\d*$","placeholder":"Please enter Instances"}'
         volume:
-          size: '{"type":"int","label":"StorageSize","required":true,"description":"Please enter the storage size","pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
+          size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please select storage"}'
       kibana:
         limits:
@@ -79,7 +79,7 @@ spec:
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4"}'
         replicas: '{"type":"int","label":"Replicas","required":true,"description":"The minimum value for master count is 3","default":3,"pattern":"^[3-9]\\d*$","placeholder":"Please enter Instances"}'
         volume:
-          size: '{"type":"int","label":"StorageSize","required":true,"description":"Please enter the storage size","pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
+          size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please select storage"}'
   preActions:
     - name: pre-elasticsearch-heimdallr-hdpool
