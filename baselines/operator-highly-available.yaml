@@ -195,7 +195,7 @@ spec:
         spec:
           containers:
             - name: elasticsearch-operator
-              image: '{{ if ne .Globe.repository "" }}{{ .Globe.repository }}/{{ end }}{{ .Globe.project }}/operator-manager:v1.11.1'
+              image: '{{ if ne .Globe.repository "" }}{{ .Globe.repository }}/{{ end }}{{ .Globe.project }}/operator-manager:v1.12.0'
               args:
                 - -leader-elect=true
               imagePullPolicy: IfNotPresent
@@ -233,8 +233,8 @@ spec:
                   cpu: "200m"
                   memory: "512Mi"
                 requests:
-                  cpu: "100m"
-                  memory: "256Mi"
+                  cpu: "200m"
+                  memory: "512Mi"
           serviceAccount: "{{ .Globe.Name }}-elasticsearch-operator"
   configurations:
     - name: "crd-elasticsearch"

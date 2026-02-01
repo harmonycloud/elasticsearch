@@ -8,240 +8,447 @@ spec:
     apiVersion: monitoring.coreos.com/v1
     kind: PrometheusRule
     metadata:
+      {{- if and .Values.alert (hasKey .Values.alert "platform") }}
+      annotations:
+        target_alias_name: 平台系统监控
+        target_name: platform
+        target_type: system
+      {{- end }}
       labels:
         prometheus: k8s
         role: alert-rules
+        {{- if and .Values.alert (hasKey .Values.alert "platform") }}
+        platform: {{ .Values.alert.platform }}
+        {{- end }}
       name: {{ .Globe.Name }}
     spec:
       groups:
       - name: elasticsearch-cluster
         rules:
-        - alert: Elasticsearch_health_up
+        - alert: ElasticsearchClusterHealth
           expr: elasticsearch_cluster_health_up{service='{{ .Globe.Name }}'} != 1
-          for: 5m
+          for: {{ .Values.alertRules.ElasticsearchClusterHealth.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchClusterHealth.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
+            product: harmonycloud
             message: 'ElasticSearch: ElasticSearch instance is unhealthy. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
-        - alert: Elasticsearch_Count_of_JVM_GC_Runs
-          expr: rate(elasticsearch_jvm_gc_collection_seconds_count{service='{{ .Globe.Name }}'}[5m]) > 5
-          for: 5m
+            {{- if .Values.alertRules.ElasticsearchClusterHealth.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchClusterHealth.silence }}
+            {{- end }}
+            
+        - alert: ElasticsearchJVMGCRuns
+          expr: rate(elasticsearch_jvm_gc_collection_seconds_count{service='{{ .Globe.Name }}'}[5m]) > {{ .Values.alertRules.ElasticsearchJVMGCRuns.threshold | default 5 }}
+          for: {{ .Values.alertRules.ElasticsearchJVMGCRuns.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchJVMGCRuns.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'ElasticSearch: Count of JVM GC runs > 5 per sec and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
-        - alert: Elasticsearch_GC_Run_Time
-          expr: rate(elasticsearch_jvm_gc_collection_seconds_sum{service='{{ .Globe.Name }}'}[5m]) > 0.3
-          for: 5m
+            product: harmonycloud
+            message: 'ElasticSearch: Count of JVM GC runs > {{ .Values.alertRules.ElasticsearchJVMGCRuns.threshold | default 5 }} per sec and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            {{- if .Values.alertRules.ElasticsearchJVMGCRuns.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchJVMGCRuns.silence }}
+            {{- end }}
+            
+        - alert: ElasticsearchGCRunTime
+          expr: rate(elasticsearch_jvm_gc_collection_seconds_sum{service='{{ .Globe.Name }}'}[5m]) > {{ .Values.alertRules.ElasticsearchGCRunTime.threshold | default 0.3 }}
+          for: {{ .Values.alertRules.ElasticsearchGCRunTime.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchGCRunTime.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'ElasticSearch: GC run time in seconds > 0.3 sec and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
-        - alert: Elasticsearch_breakers_tripped
-          expr: rate(elasticsearch_breakers_tripped{service='{{ .Globe.Name }}'}[5m]) > 0
-          for: 5m
+            product: harmonycloud
+            message: 'ElasticSearch: GC run time in seconds > {{ .Values.alertRules.ElasticsearchGCRunTime.threshold | default 0.3 }} sec and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            {{- if .Values.alertRules.ElasticsearchGCRunTime.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchGCRunTime.silence }}
+            {{- end }}
+            
+        - alert: ElasticsearchBreakersTripped
+          expr: rate(elasticsearch_breakers_tripped{service='{{ .Globe.Name }}'}[5m]) > {{ .Values.alertRules.ElasticsearchBreakersTripped.threshold | default 0 }}
+          for: {{ .Values.alertRules.ElasticsearchBreakersTripped.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchBreakersTripped.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'ElasticSearch: breakers tripped > 0 and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
-        - alert: Elasticsearch_health_timed_out
-          expr: elasticsearch_cluster_health_timed_out{service='{{ .Globe.Name }}'} > 0
-          for: 5m
+            product: harmonycloud
+            message: 'ElasticSearch: breakers tripped > {{ .Values.alertRules.ElasticsearchBreakersTripped.threshold | default 0 }} and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            {{- if .Values.alertRules.ElasticsearchBreakersTripped.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchBreakersTripped.silence }}
+            {{- end }}
+            
+        - alert: ElasticsearchHealthTimedOut
+          expr: elasticsearch_cluster_health_timed_out{service='{{ .Globe.Name }}'} > {{ .Values.alertRules.ElasticsearchHealthTimedOut.threshold | default 0 }}
+          for: {{ .Values.alertRules.ElasticsearchHealthTimedOut.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchHealthTimedOut.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'ElasticSearch: Number of cluster health checks timed out > 0 and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            product: harmonycloud
+            message: 'ElasticSearch: Number of cluster health checks timed out > {{ .Values.alertRules.ElasticsearchHealthTimedOut.threshold | default 0 }} and has a value of {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            {{- if .Values.alertRules.ElasticsearchHealthTimedOut.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchHealthTimedOut.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchHeapUsageTooHigh
-          expr: (elasticsearch_jvm_memory_used_bytes{area="heap",service='{{ .Globe.Name }}'} / elasticsearch_jvm_memory_max_bytes{area="heap",service='{{ .Globe.Name }}'}) * 100 > 90
-          for: 5m
+          expr: (elasticsearch_jvm_memory_used_bytes{area="heap",service='{{ .Globe.Name }}'} / elasticsearch_jvm_memory_max_bytes{area="heap",service='{{ .Globe.Name }}'}) * 100 > {{ .Values.alertRules.ElasticsearchHeapUsageTooHigh.threshold | default 90 }}
+          for: {{ .Values.alertRules.ElasticsearchHeapUsageTooHigh.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchHeapUsageTooHigh.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'ElasticSearch: The heap usage is over 90%,  current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            product: harmonycloud
+            message: 'ElasticSearch: The heap usage is over {{ .Values.alertRules.ElasticsearchHeapUsageTooHigh.threshold | default 90 }}%,  current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            {{- if .Values.alertRules.ElasticsearchHeapUsageTooHigh.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchHeapUsageTooHigh.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchHeapUsageWarning
-          expr: (elasticsearch_jvm_memory_used_bytes{area="heap",service='{{ .Globe.Name }}'} / elasticsearch_jvm_memory_max_bytes{area="heap",service='{{ .Globe.Name }}'}) * 100 > 80
-          for: 5m
+          expr: (elasticsearch_jvm_memory_used_bytes{area="heap",service='{{ .Globe.Name }}'} / elasticsearch_jvm_memory_max_bytes{area="heap",service='{{ .Globe.Name }}'}) * 100 > {{ .Values.alertRules.ElasticsearchHeapUsageWarning.threshold | default 80 }}
+          for: {{ .Values.alertRules.ElasticsearchHeapUsageWarning.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchHeapUsageWarning.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'Elasticsearch: The heap usage is over 80%, current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            product: harmonycloud
+            message: 'Elasticsearch: The heap usage is over {{ .Values.alertRules.ElasticsearchHeapUsageWarning.threshold | default 80 }}%, current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            {{- if .Values.alertRules.ElasticsearchHeapUsageWarning.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchHeapUsageWarning.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchDiskOutOfSpace
-          expr: elasticsearch_filesystem_data_available_bytes{service='{{ .Globe.Name }}'} / elasticsearch_filesystem_data_size_bytes{service='{{ .Globe.Name }}'} * 100 < 15
-          for: 5m
+          expr: elasticsearch_filesystem_data_available_bytes{service='{{ .Globe.Name }}'} / elasticsearch_filesystem_data_size_bytes{service='{{ .Globe.Name }}'} * 100 < {{ .Values.alertRules.ElasticsearchDiskOutOfSpace.threshold | default 15 }}
+          for: {{ .Values.alertRules.ElasticsearchDiskOutOfSpace.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchDiskOutOfSpace.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'Elasticsearch: The available disk space is less than 15%,  current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            product: harmonycloud
+            message: 'Elasticsearch: The available disk space is less than {{ .Values.alertRules.ElasticsearchDiskOutOfSpace.threshold | default 15 }}%,  current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            {{- if .Values.alertRules.ElasticsearchDiskOutOfSpace.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchDiskOutOfSpace.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchDiskSpaceLow
-          expr: elasticsearch_filesystem_data_available_bytes{service='{{ .Globe.Name }}'} / elasticsearch_filesystem_data_size_bytes{service='{{ .Globe.Name }}'} * 100 < 30
-          for: 5m
+          expr: elasticsearch_filesystem_data_available_bytes{service='{{ .Globe.Name }}'} / elasticsearch_filesystem_data_size_bytes{service='{{ .Globe.Name }}'} * 100 < {{ .Values.alertRules.ElasticsearchDiskSpaceLow.threshold | default 30 }}
+          for: {{ .Values.alertRules.ElasticsearchDiskSpaceLow.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchDiskSpaceLow.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'Elasticsearch: The available disk space is less than 30%,  current_value = {{`{{ printf "%.0f" $value }`}}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            product: harmonycloud
+            message: 'Elasticsearch: The available disk space is less than {{ .Values.alertRules.ElasticsearchDiskSpaceLow.threshold | default 30 }}%,  current_value = {{`{{ printf "%.0f" $value }`}}}%. (Namespace: {{ .Globe.Namespace }}, Pod: {{`{{ $labels.pod }}`}})'
+            {{- if .Values.alertRules.ElasticsearchDiskSpaceLow.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchDiskSpaceLow.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchClusterRed
           expr: elasticsearch_cluster_health_status{color="red",service='{{ .Globe.Name }}'} == 1
-          for: 5m
+          for: {{ .Values.alertRules.ElasticsearchClusterRed.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchClusterRed.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
+            product: harmonycloud
             message: 'Elasticsearch: The cluster is in red state. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchClusterRed.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchClusterRed.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchClusterYellow
           expr: elasticsearch_cluster_health_status{color="yellow",service='{{ .Globe.Name }}'} == 1
-          for: 5m
+          for: {{ .Values.alertRules.ElasticsearchClusterYellow.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchClusterYellow.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
+            product: harmonycloud
             message: 'Elasticsearch: The cluster is in yellow state. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchClusterYellow.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchClusterYellow.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchHealthyNodes
           expr: elasticsearch_cluster_health_number_of_nodes{service='{{ .Globe.Name }}'} < number_of_nodes
-          for: 5m
+          for: {{ .Values.alertRules.ElasticsearchHealthyNodes.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchHealthyNodes.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
+            product: harmonycloud
             message: 'Elasticsearch: Number Healthy Nodes less then number_of_nodes, current_value = {{`{{ $value }`}}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchHealthyNodes.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchHealthyNodes.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchRelocatingShards
-          expr: elasticsearch_cluster_health_relocating_shards{service='{{ .Globe.Name }}'} > 0
-          for: 5m
+          expr: elasticsearch_cluster_health_relocating_shards{service='{{ .Globe.Name }}'} > {{ .Values.alertRules.ElasticsearchRelocatingShards.threshold | default 0 }}
+          for: {{ .Values.alertRules.ElasticsearchRelocatingShards.interval | default "5" }}m
           labels:
-            severity: info
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchRelocatingShards.alertLevel | default "info" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
+            product: harmonycloud
             message: 'ElasticSearch: Elasticsearch is relocating shards,  current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchRelocatingShards.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchRelocatingShards.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchRelocatingShardsTooLong
-          expr: elasticsearch_cluster_health_relocating_shards{service='{{ .Globe.Name }}'} > 0
-          for: 15m
+          expr: elasticsearch_cluster_health_relocating_shards{service='{{ .Globe.Name }}'} > {{ .Values.alertRules.ElasticsearchRelocatingShardsTooLong.threshold | default 0 }}
+          for: {{ .Values.alertRules.ElasticsearchRelocatingShardsTooLong.interval | default "15" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchRelocatingShardsTooLong.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'ElasticSearch: Elasticsearch has been relocating shards for 15min, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            product: harmonycloud
+            message: 'ElasticSearch: Elasticsearch has been relocating shards for {{ .Values.alertRules.ElasticsearchRelocatingShardsTooLong.interval | default "15" }}min, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchRelocatingShardsTooLong.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchRelocatingShardsTooLong.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchInitializingShards
-          expr: elasticsearch_cluster_health_initializing_shards{service='{{ .Globe.Name }}'} > 0
-          for: 5m
+          expr: elasticsearch_cluster_health_initializing_shards{service='{{ .Globe.Name }}'} > {{ .Values.alertRules.ElasticsearchInitializingShards.threshold | default 0 }}
+          for: {{ .Values.alertRules.ElasticsearchInitializingShards.interval | default "5" }}m
           labels:
-            severity: info
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchInitializingShards.alertLevel | default "info" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
+            product: harmonycloud
             message: 'ElasticSearch: Elasticsearch is initializing shards, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchInitializingShards.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchInitializingShards.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchInitializingShardsTooLong
-          expr: elasticsearch_cluster_health_initializing_shards{service='{{ .Globe.Name }}'} > 0
-          for: 15m
+          expr: elasticsearch_cluster_health_initializing_shards{service='{{ .Globe.Name }}'} > {{ .Values.alertRules.ElasticsearchInitializingShardsTooLong.threshold | default 0 }}
+          for: {{ .Values.alertRules.ElasticsearchInitializingShardsTooLong.interval | default "15" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchInitializingShardsTooLong.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'ElasticSearch: Elasticsearch has been initializing shards for 15 min, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            product: harmonycloud
+            message: 'ElasticSearch: Elasticsearch has been initializing shards for {{ .Values.alertRules.ElasticsearchInitializingShardsTooLong.interval | default "15" }} min, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchInitializingShardsTooLong.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchInitializingShardsTooLong.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchUnassignedShards
-          expr: elasticsearch_cluster_health_unassigned_shards{service='{{ .Globe.Name }}'} > 0
-          for: 5m
+          expr: elasticsearch_cluster_health_unassigned_shards{service='{{ .Globe.Name }}'} > {{ .Values.alertRules.ElasticsearchUnassignedShards.threshold | default 0 }}
+          for: {{ .Values.alertRules.ElasticsearchUnassignedShards.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchUnassignedShards.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
+            product: harmonycloud
             message: 'ElasticSearch: Elasticsearch has unassigned shards, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchUnassignedShards.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchUnassignedShards.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchPendingTasks
-          expr: elasticsearch_cluster_health_number_of_pending_tasks{service='{{ .Globe.Name }}'} > 0
-          for: 15m
+          expr: elasticsearch_cluster_health_number_of_pending_tasks{service='{{ .Globe.Name }}'} > {{ .Values.alertRules.ElasticsearchPendingTasks.threshold | default 0 }}
+          for: {{ .Values.alertRules.ElasticsearchPendingTasks.interval | default "15" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchPendingTasks.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
+            product: harmonycloud
             message: 'ElasticSearch: Elasticsearch has pending tasks. Cluster works slowly, current_value = {{`{{ $value }}`}}. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchPendingTasks.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchPendingTasks.silence }}
+            {{- end }}
+            
         - alert: ElasticsearchOpenFdsUsageTooHigh
-          expr: (process_open_fds{service='{{ .Globe.Name }}'} / process_max_fds{service='{{ .Globe.Name }}'}) * 100 > 75
-          for: 5m
+          expr: (process_open_fds{service='{{ .Globe.Name }}'} / process_max_fds{service='{{ .Globe.Name }}'}) * 100 > {{ .Values.alertRules.ElasticsearchOpenFdsUsageTooHigh.threshold | default 75 }}
+          for: {{ .Values.alertRules.ElasticsearchOpenFdsUsageTooHigh.interval | default "5" }}m
           labels:
-            severity: warning
-            project: zeus
-            subject: middleware
+            severity: {{ .Values.alertRules.ElasticsearchOpenFdsUsageTooHigh.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ .Globe.Namespace }}
+            service: {{ .Globe.Name }}
+            {{- if .Values.clusterId }}
+            clusterId: {{ .Values.clusterId }}
+            {{- end }}
             {{- with .Values.labels }}
             {{- toYaml . | nindent 8 }}
             {{- end }}
           annotations:
-            message: 'Elasticsearch: The Open Fds usage is over 75%, current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            product: harmonycloud
+            message: 'Elasticsearch: The Open Fds usage is over {{ .Values.alertRules.ElasticsearchOpenFdsUsageTooHigh.threshold | default 75 }}%, current_value = {{`{{ printf "%.0f" $value }}`}}%. (Namespace: {{ .Globe.Namespace }}, ServiceName: {{`{{ $labels.service }}`}})'
+            {{- if .Values.alertRules.ElasticsearchOpenFdsUsageTooHigh.silence }}
+            silence: {{ .Values.alertRules.ElasticsearchOpenFdsUsageTooHigh.silence }}
+            {{- end }}
+    
+    {{- if .Values.customAlertRules }}
+      - name: custom-alert-rules
+        rules:
+        {{ $namespace := .Release.Namespace }}
+        {{- range $name, $rule := .Values.customAlertRules }}
+        - alert: {{ $name }}
+          expr: {{ $rule.alertExpr }}
+          for: {{ $rule.interval | default "5" }}m
+          labels:
+            severity: {{ $rule.alertLevel | default "warning" }}
+            middleware: elasticsearch
+            namespace: {{ $namespace }}
+            service: {{ include "elasticsearch.fullname" $ }}
+            {{- if $.Values.clusterId }}
+            clusterId: {{ $.Values.clusterId }}
+            {{- end }}
+            {{- with .Values.labels }}
+            {{- toYaml . | nindent 8 }}
+            {{- end }}
+          annotations:
+            message: '{{ $rule.alertText }}'
+            {{- if $rule.silence }}
+            silence: {{ $rule.silence }}
+            {{- end }}
+        {{- end }}
+    {{- end }}
+    
     {{- end }}

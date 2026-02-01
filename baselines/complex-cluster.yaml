@@ -12,7 +12,7 @@ spec:
     name: elasticsearch-operator-standard
     gvkName: v1alpha1
   necessary:
-    version: '{"type":"version","label":"Version","required":true,"default":"7.17.28"}'
+    version: '{"type":"version","label":"Version","required":true,"default":"8.14.3"}'
     repository: ""
     password: |
       {
@@ -135,7 +135,7 @@ spec:
     esKibanaPort: 5200
     esTcpPort: 9300
     elasticPass: '"{{ .Necessary.password }}"'
-    kibanaImage: '{{ .Necessary.repository }}/kibana:{{ if contains "6.8" .Necessary.version }}6.8.10{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else if eq "7.17.28" .Necessary.version }}7.17.28{{ else if eq "8.11.3" .Necessary.version }}8.11.3{{ else }}8.13.4{{ end }}'
+    kibanaImage: '{{ .Necessary.repository }}/kibana:{{ if contains "6.8" .Necessary.version }}6.8.10{{ else if eq "7.16.2" .Necessary.version }}7.16.2{{ else if eq "7.16.3" .Necessary.version }}7.16.3{{ else if eq "7.17.28" .Necessary.version }}7.17.28{{ else if eq "8.11.3" .Necessary.version }}8.11.3{{ else if eq "8.13.4" .Necessary.version }}8.13.4{{ else }}8.14.3{{ end }}'
     elasticBusyImage: "{{ .Necessary.repository }}/busybox:1.0"
     kibanaReplicas: "{{ .Necessary.resource.kibana.replicas }}"
     masterReplaces: "{{ .Necessary.resource.master.replicas }}"
@@ -147,7 +147,7 @@ spec:
       - env:
           - name: PathRepo
             value: /data/elastic/{ClusterName}/{PodName}/data/data_back
-        initImage: "{{ .Necessary.repository }}/es-init:v1.7.0"
+        initImage: "{{ .Necessary.repository }}/es-init:v1.8.0-init"
         podAntiAffinityTopologKey: kubernetes.io/hostname
         podAntiAffinity: soft
         storage:
@@ -159,7 +159,7 @@ spec:
           coldClass: "{{ .Necessary.resource.cold.volume.storageClass }}"
           dataClass: "{{ .Necessary.resource.data.volume.storageClass }}"
           masterClass: "{{ .Necessary.resource.master.volume.storageClass }}"
-        middlewareImage: '{{ .Necessary.repository }}/elastic:{{ if contains "6.8" .Necessary.version }}6.8.22-466e79{{ else if eq "7.16.2" .Necessary.version }}7.16.2-466e79{{ else if eq "7.16.3" .Necessary.version }}7.16.3-466e79{{ else if eq "7.17.28" .Necessary.version }}7.17.28{{ else if eq "8.11.3" .Necessary.version }}8.11.3-466e79{{ else }}8.13.4-751e{{ end }}'
+        middlewareImage: '{{ .Necessary.repository }}/elastic:{{ if contains "6.8" .Necessary.version }}6.8.22-466e79{{ else if eq "7.16.2" .Necessary.version }}7.16.2-6e67c5{{ else if eq "7.16.3" .Necessary.version }}7.16.3-6e67c5{{ else if eq "7.17.28" .Necessary.version }}7.17.28-6e67c53e{{ else if eq "8.11.3" .Necessary.version }}8.11.3-466e79{{ else if eq "8.13.4" .Necessary.version }}8.13.4-466e79{{ else }}8.14.3-35f41674{{ end }}'
         monitorImage: "{{ .Necessary.repository }}/es-exporter:v1.6.0"
         hostNetwork: false
         resources:
@@ -247,7 +247,47 @@ spec:
     volumes: { }
   configurations:
     - name: elasticsearch-alertrule
-      values: { }
+      values:
+        # 自定义告警规则示例
+        #customAlertRules:
+        #  CustomCpuUsageHigh:
+        #    alertLevel: warning
+        #    threshold: 80
+        #    silence: 1h
+        #    interval: 5
+        #    alertText: "Custom alert rule text"
+        #    alertExpr: |
+        #      sum(rate(elasticsearch_indices_search_query_total[5m])) by (instance) > 1000
+
+        labels: {}
+        # clusterId可选配置
+        #clusterId: "default--dev-125"
+
+        alert: { }
+        # platform: zeus
+
+        # 告警规则配置
+        alertRules:
+          ElasticsearchExporterDown: { }
+          ElasticsearchClusterHealth: { }
+          ElasticsearchJVMGCRuns: { }
+          ElasticsearchGCRunTime: { }
+          ElasticsearchBreakersTripped: { }
+          ElasticsearchHealthTimedOut: { }
+          ElasticsearchHeapUsageTooHigh: { }
+          ElasticsearchHeapUsageWarning: { }
+          ElasticsearchDiskOutOfSpace: { }
+          ElasticsearchDiskSpaceLow: { }
+          ElasticsearchClusterRed: { }
+          ElasticsearchClusterYellow: { }
+          ElasticsearchHealthyNodes: { }
+          ElasticsearchRelocatingShards: { }
+          ElasticsearchRelocatingShardsTooLong: { }
+          ElasticsearchInitializingShards: { }
+          ElasticsearchInitializingShardsTooLong: { }
+          ElasticsearchUnassignedShards: { }
+          ElasticsearchPendingTasks: { }
+          ElasticsearchOpenFdsUsageTooHigh: { }
     - name: elasticsearch-clusterrole
       values: { }
     - name: elasticsearch-clusterrolebinding
