@@ -32,6 +32,8 @@ spec:
             severity: {{ .Values.alertRules.ElasticsearchClusterHealth.alertLevel | default "warning" }}
             middleware: elasticsearch
             namespace: {{ .Globe.Namespace }}
+            project: zeus
+            subject: middleware
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
             clusterId: {{ .Values.clusterId }}
@@ -53,6 +55,8 @@ spec:
             severity: {{ .Values.alertRules.ElasticsearchJVMGCRuns.alertLevel | default "warning" }}
             middleware: elasticsearch
             namespace: {{ .Globe.Namespace }}
+            project: zeus
+            subject: middleware
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
             clusterId: {{ .Values.clusterId }}
@@ -73,6 +77,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchGCRunTime.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -94,6 +100,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchBreakersTripped.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -115,6 +123,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchHealthTimedOut.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -137,6 +147,8 @@ spec:
             severity: {{ .Values.alertRules.ElasticsearchHeapUsageTooHigh.alertLevel | default "warning" }}
             middleware: elasticsearch
             namespace: {{ .Globe.Namespace }}
+            project: zeus
+            subject: middleware
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
             clusterId: {{ .Values.clusterId }}
@@ -157,6 +169,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchHeapUsageWarning.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -178,6 +192,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchDiskOutOfSpace.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -200,6 +216,8 @@ spec:
             severity: {{ .Values.alertRules.ElasticsearchDiskSpaceLow.alertLevel | default "warning" }}
             middleware: elasticsearch
             namespace: {{ .Globe.Namespace }}
+            project: zeus
+            subject: middleware
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
             clusterId: {{ .Values.clusterId }}
@@ -221,6 +239,8 @@ spec:
             severity: {{ .Values.alertRules.ElasticsearchClusterRed.alertLevel | default "warning" }}
             middleware: elasticsearch
             namespace: {{ .Globe.Namespace }}
+            project: zeus
+            subject: middleware
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
             clusterId: {{ .Values.clusterId }}
@@ -242,6 +262,8 @@ spec:
             severity: {{ .Values.alertRules.ElasticsearchClusterYellow.alertLevel | default "warning" }}
             middleware: elasticsearch
             namespace: {{ .Globe.Namespace }}
+            project: zeus
+            subject: middleware
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
             clusterId: {{ .Values.clusterId }}
@@ -262,6 +284,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchHealthyNodes.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -283,6 +307,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchRelocatingShards.alertLevel | default "info" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -304,6 +330,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchRelocatingShardsTooLong.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -325,6 +353,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchInitializingShards.alertLevel | default "info" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -346,6 +376,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchInitializingShardsTooLong.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -367,6 +399,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchUnassignedShards.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -388,6 +422,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchPendingTasks.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -409,6 +445,8 @@ spec:
           labels:
             severity: {{ .Values.alertRules.ElasticsearchOpenFdsUsageTooHigh.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ .Globe.Namespace }}
             service: {{ .Globe.Name }}
             {{- if .Values.clusterId }}
@@ -435,6 +473,8 @@ spec:
           labels:
             severity: {{ $rule.alertLevel | default "warning" }}
             middleware: elasticsearch
+            project: zeus
+            subject: middleware
             namespace: {{ $namespace }}
             service: {{ include "elasticsearch.fullname" $ }}
             {{- if $.Values.clusterId }}
