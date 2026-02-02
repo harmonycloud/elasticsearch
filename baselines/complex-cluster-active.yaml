@@ -75,12 +75,6 @@ spec:
         replicas: '{"type":"int","label":"Replicas","required":true,"description":"Number of master nodes, please enter an odd number greater than or equal to 3","default":3,"pattern":"^(3|5|7|9|[1-9]\\d*[13579])$","placeholder":"Please enter Instances"}'
         volumes: ""
   preActions:
-    - name: pre-elasticsearch-heimdallr-hdpool
-      parameters:
-        networkCardList: [ ]
-        annotations: { }
-      fixed: false
-      exposed: true
     - name: pre-elasticsearch-alertrule-labels
       parameters:
         labels: {}

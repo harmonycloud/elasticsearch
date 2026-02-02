@@ -42,12 +42,6 @@ spec:
           size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size","min":"0.1"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please enter Instances"}'
   preActions:
-    - name: pre-elasticsearch-heimdallr-hdpool
-      parameters:
-        networkCardList: [ ]
-        annotations: { }
-      fixed: false
-      exposed: true
     - name: pre-elasticsearch-alertrule-labels
       parameters:
         labels: {}
