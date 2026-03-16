@@ -15,15 +15,34 @@ spec:
   necessary:
     version: '{"type":"version","label":"Version","required":true,"default":"8.14.3"}'
     repository: ""
+#    password: |
+#      {
+#        "type": "password",
+#        "label": "AdminPassword",
+#        "required": true,
+#        "description": "Please enter a password consisting of English letters, numbers, or the special characters \"~, _, .\"",
+#        "placeholder": "Enter your admin password",
+#        "pattern": "^[A-Za-z0-9~_.]*$"
+#       }
     password: |
       {
         "type": "password",
         "label": "AdminPassword",
         "required": true,
+        "patterns": [
+          {
+            "pattern": "^[A-Za-z0-9~_.]*$",
+            "description": "Please enter a password consisting of English letters, numbers, or the special characters \"~, _, .\"",
+          },
+          {
+            "pattern": "^.{8,32}$",
+            "description": "Password length must be between 8 and 32 characters"
+          }
+        ],
+        "pattern": "^[A-Za-z0-9~_.]*$",
         "description": "Please enter a password consisting of English letters, numbers, or the special characters \"~, _, .\"",
-        "placeholder": "Enter your admin password",
-        "pattern": "^[A-Za-z0-9~_.]*$"
-       }
+        "placeholder": "Enter your admin password"
+      }
     # elasticsearchPort:
     #   exporter: "19114"
     #   http: "9200"
