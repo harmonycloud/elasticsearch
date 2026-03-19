@@ -35,7 +35,7 @@ spec:
           },
           {
             "pattern": "^[A-Za-z0-9~_.]*$",
-            "description": "Please enter a password consisting of English letters, numbers, or the special characters \"~, _, .\"",
+            "description": "Please enter a password consisting of English letters, numbers, or the special characters \"~, _, .\""
           }
         ],
         "pattern": "^[A-Za-z0-9~_.]*$",
