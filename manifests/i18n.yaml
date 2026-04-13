@@ -36,6 +36,8 @@ description:
     name-zh: "请输入自定义配额,单位为Gi"
   - name: "Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7)."
     name-zh: "请输入大于等于 3 的奇数（如 3、5、7 个）的实例数"
+  - name: "Please enter the number of instances"
+    name-zh: "请输入实例数"
   - name: "Please enter an number of instances greater than or equal to 3."
     name-zh: "请输入大于等于3的实例数"
   - name: "Number of nodes, please enter an odd number greater than or equal to 3"
@@ -57,8 +59,6 @@ description:
     name-zh: "长度需要8-32之间"
 
 
-  - name: "The minimum value for kibana count is 1"
-    name-zh: "kibana节点数量，至少为1"
 
   - name: "Number of master nodes, please enter an odd number greater than or equal to 3"
     name-zh: "master节点数量，请输入3或3以上的奇数"
@@ -100,6 +100,8 @@ placeholder:
     name-zh: "请选择存储"
   - name: "Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7)."
     name-zh: "请输入大于等于 3 的奇数（如 3、5、7 个）的实例数"
+  - name: "Please enter the number of instances"
+    name-zh: "请输入实例数"
   - name: "Please enter an number of instances greater than or equal to 3."
     name-zh: "请输入大于等于3的实例数"
   - name: "Enter your admin password"
