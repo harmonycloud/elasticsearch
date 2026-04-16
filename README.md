@@ -1,322 +1,219 @@
-# Elasticsearch 搜索引擎服务
+# Elasticsearch Search Engine Service
 
-## 描述
+Enterprise-grade Elasticsearch search and analytics service for Kubernetes with distributed clustering, multi-role node architecture, and integrated Kibana visualization.
 
-Elasticsearch 是一个分布式、RESTful 风格的搜索和数据分析引擎，能够以极快的速度存储、搜索和分析大量数据。本服务基于 Elasticsearch 数据库，提供企业级的高可用、高性能搜索和分析解决方案，支持实时搜索、日志分析、指标监控等多种应用场景。
+## Overview
 
-## 功能
+Elasticsearch is a distributed, RESTful search and analytics engine capable of storing, searching, and analyzing large volumes of data at near-real-time speed. This package delivers a production-ready Elasticsearch cluster on Kubernetes, supporting real-time search, log analytics, metrics monitoring, and a wide range of other use cases.
 
-### 核心功能
-- **全文搜索**: 强大的全文搜索能力，支持复杂的查询语法
-- **实时分析**: 实时数据索引和分析，支持聚合查询
-- **分布式架构**: 自动分片和副本管理，支持水平扩展
-- **高可用性**: 多节点集群，自动故障转移和恢复
-- **RESTful API**: 完整的 REST API，易于集成和开发
-- **数据持久化**: 基于 Kubernetes 持久化存储
+## Features
 
-### 高级特性
-- **多节点类型**: 支持 Master、Data、Client、Cold 等不同角色节点
-- **索引管理**: 自动索引生命周期管理，支持索引模板
-- **监控告警**: 集成 Prometheus 监控和告警规则
-- **Kibana 集成**: 内置 Kibana 可视化界面
-- **备份恢复**: 支持快照和恢复功能
-- **安全认证**: 支持用户认证和权限控制
-- **日志管理**: 支持文件日志和标准输出日志
+### Core Capabilities
+- **Full-text search**: Powerful full-text search with complex query syntax support
+- **Real-time analytics**: Real-time data indexing and analytics with aggregation queries
+- **Distributed architecture**: Automatic sharding and replica management with horizontal scaling
+- **High availability**: Multi-node clustering with automatic failover and recovery
+- **RESTful API**: Complete REST API for easy integration and development
+- **Durable storage**: Kubernetes persistent volumes for data persistence
 
-### 企业级功能
-- **集群管理**: 自动集群发现和节点管理
-- **负载均衡**: 智能查询路由和负载分配
-- **性能优化**: 内置性能调优参数
-- **扩展性**: 支持动态添加和移除节点
-- **多租户**: 支持索引级别的隔离
+### Advanced Features
+- **Multi-role nodes**: Support for Master, Data, Client, and Cold node roles
+- **Index management**: Automatic index lifecycle management with index templates
+- **Monitoring and alerting**: Integrated Prometheus metrics and alert rules
+- **Kibana integration**: Built-in Kibana visualization dashboard
+- **Backup and restore**: Snapshot and restore functionality
+- **Security and authentication**: User authentication and access control
+- **Log management**: File-based and stdout logging support
 
-## 支持版本
+### Enterprise Features
+- **Cluster management**: Automatic cluster discovery and node management
+- **Load balancing**: Intelligent query routing and load distribution
+- **Performance tuning**: Built-in performance optimization parameters
+- **Scalability**: Dynamic node addition and removal
+- **Multi-tenancy**: Index-level isolation support
 
-### Elasticsearch 版本
-- **8.14.3** (最新版本，推荐)
-- **7.17.28** (稳定版本)
+## Supported Versions
+
+### Elasticsearch Releases
+- **8.14.3** (latest)
+- **7.17.28**
 - **7.16.2**
 - **7.16.3**
-- **6.8.22** (兼容版本)
+- **6.8.22**
 
-### 组件版本
-- **Elasticsearch Operator**: d9c61c4
-- **Elasticsearch**: 根据版本自动选择 (如 7.16.3-466e79)
-- **Kibana**: 根据版本自动选择 (如 7.16.3)
+### Component Releases
+- **Package version**: 1.12.1-1.0.0
 - **ES Exporter**: v1.6.0
 - **ES Init**: v1.7.0
-- **BusyBox**: 1.0
 
-## 架构
+## Architecture
 
-### 部署模式
+### Deployment Modes
 
-#### 1. 集群模式 (cluster)
-- **适用场景**: 生产环境、需要高可用的搜索服务
-- **特点**: 多节点集群，支持自动故障转移
-- **配置**: 3+ 个 Master 节点，确保集群稳定性
-- **优势**: 高可用、高性能、易扩展
+#### 1. Cluster (cluster)
+- **Use cases**: Production environments requiring highly available search services
+- **Traits**: Multi-node cluster with automatic failover
+- **Topology**: 3+ Master nodes ensuring cluster stability
 
-#### 2. 混合模式 (complex-cluster)
-- **适用场景**: 大规模生产环境、需要角色分离的场景
-- **特点**: 多角色节点分离，优化资源使用
-- **配置**: Master、Data、Client、Cold 节点独立配置
-- **优势**: 资源优化、性能调优、成本控制
+#### 2. Complex Cluster (complex-cluster)
+- **Use cases**: Large-scale production environments requiring role separation
+- **Traits**: Multi-role node separation for optimized resource usage
+- **Topology**: Independent Master, Data, Client, and Cold nodes
 
-#### 3. 高可用模式 (highly-available)
-- **适用场景**: 关键业务系统、对可用性要求极高的场景
-- **特点**: 多节点部署，自动故障转移，数据强一致性
-- **配置**: 3+ 实例，支持跨可用区部署
+#### 3. Cluster Active-Active (cluster-active)
+- **Use cases**: Multi-site active-active deployments
+- **Traits**: Cross-datacenter cluster replication
 
-### 技术架构
+#### 4. Complex Cluster Active-Active (complex-cluster-active)
+- **Use cases**: Large-scale multi-site active-active deployments with role separation
+- **Traits**: Multi-role nodes with cross-datacenter replication
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Elasticsearch Cluster                   │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │   Master    │  │   Master    │  │   Master    │        │
-│  │   Node      │  │   Node      │  │   Node      │        │
-│  └─────────────┘  └─────────────┘  └─────────────┘        │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │   Data      │  │   Data      │  │   Data      │        │
-│  │   Node      │  │   Node      │  │   Node      │        │
-│  └─────────────┘  └─────────────┘  └─────────────┘        │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │   Client    │  │   Client    │  │   Cold      │        │
-│  │   Node      │  │   Node      │  │   Node      │        │
-│  └─────────────┘  └─────────────┘  └─────────────┘        │
-├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │   Kibana    │  │  Exporter   │  │   Service   │        │
-│  │   Node      │  │   Node      │  │  (Endpoints)│        │
-│  └─────────────┘  └─────────────┘  └─────────────┘        │
-├─────────────────────────────────────────────────────────────┤
-│                 Kubernetes Storage (PVC)                   │
-└─────────────────────────────────────────────────────────────┘
-```
+#### 5. Operator Standard (operator-standard)
+- **Use cases**: Development, testing, and quick deployment
+- **Traits**: Single-instance, minimal resources
 
-### 节点角色说明
+#### 6. Operator Highly Available (operator-highly-available)
+- **Use cases**: Production environments
+- **Traits**: Multi-instance with automatic failover
 
-- **Master 节点**: 集群管理、索引管理、节点协调
-- **Data 节点**: 数据存储、索引分片、搜索执行
-- **Client 节点**: 查询路由、负载均衡、API 接口
-- **Cold 节点**: 冷数据存储、归档数据管理
-- **Kibana 节点**: 数据可视化和分析界面
-- **Exporter 节点**: 监控指标收集
-
-### 数据流架构
+### Technical Architecture
 
 ```
-Application → Client Node → Data Node → Storage
-                    ↓
-              Master Node (协调)
-                    ↓
-              Kibana (可视化)
-                    ↓
-              Exporter (监控)
++---------------------------------------------------------+
+|                  Elasticsearch Cluster                   |
++---------------------------------------------------------+
+|  +-----------+  +-----------+  +-----------+            |
+|  |  Master   |  |  Master   |  |  Master   |            |
+|  |  Node     |  |  Node     |  |  Node     |            |
+|  +-----------+  +-----------+  +-----------+            |
++---------------------------------------------------------+
+|  +-----------+  +-----------+  +-----------+            |
+|  |  Data     |  |  Data     |  |  Data     |            |
+|  |  Node     |  |  Node     |  |  Node     |            |
+|  +-----------+  +-----------+  +-----------+            |
++---------------------------------------------------------+
+|  +-----------+  +-----------+  +-----------+            |
+|  |  Client   |  |  Client   |  |  Cold     |            |
+|  |  Node     |  |  Node     |  |  Node     |            |
+|  +-----------+  +-----------+  +-----------+            |
++---------------------------------------------------------+
+|  +-----------+  +-----------+  +-----------+            |
+|  |  Kibana   |  | Exporter  |  |  Service  |            |
+|  |  Node     |  |  Node     |  | (Endpoints)|           |
+|  +-----------+  +-----------+  +-----------+            |
++---------------------------------------------------------+
+|               Kubernetes Storage (PVC)                  |
++---------------------------------------------------------+
 ```
 
-## 使用建议
+### Node Roles
 
-### 环境选择
+- **Master node**: Cluster management, index management, node coordination
+- **Data node**: Data storage, index shards, search execution
+- **Client node**: Query routing, load balancing, API gateway
+- **Cold node**: Cold data storage, archive data management
+- **Kibana node**: Data visualization and analytics dashboard
+- **Exporter node**: Monitoring metrics collection
 
-#### 开发测试环境
-- **推荐配置**: 集群模式
-- **资源规格**: CPU 1 Core, 内存 4Gi, 存储 50Gi
-- **版本选择**: Elasticsearch 7.16.3
-- **实例数**: 3 个 Master 节点
+## Prerequisites
 
-#### 生产环境
-- **推荐配置**: 混合模式
-- **资源规格**: 
-  - Master: CPU 2+ Core, 内存 8+ Gi
-  - Data: CPU 4+ Core, 内存 16+ Gi, 存储 500+ Gi
-  - Client: CPU 2+ Core, 内存 8+ Gi
-- **版本选择**: Elasticsearch 8.13.4 或 7.16.3
-- **实例数**: 3+ 个节点，确保高可用
+- Kubernetes 1.26+
+- [OpenSaola Operator](https://github.com/harmonycloud/opensaola) deployed
+- [saola-cli](https://github.com/harmonycloud/saola-cli) installed
 
-### 配置建议
+## Quick Start
 
-#### 资源规划
-```yaml
-# 生产环境推荐配置
-resources:
-  master:
-    limits:
-      cpu: "2"        # 2 Core
-      memory: "8Gi"   # 8GB
-    requests:
-      cpu: "1"        # 1 Core
-      memory: "4Gi"   # 4GB
-  data:
-    limits:
-      cpu: "4"        # 4 Core
-      memory: "16Gi"  # 16GB
-    requests:
-      cpu: "2"        # 2 Core
-      memory: "8Gi"   # 8GB
-  client:
-    limits:
-      cpu: "2"        # 2 Core
-      memory: "8Gi"   # 8GB
-    requests:
-      cpu: "1"        # 1 Core
-      memory: "4Gi"   # 4GB
+```bash
+# Publish the package
+saola publish elasticsearch/
 
-# 存储配置
-volume:
-  size: 500           # 500GB
-  storageClass: "fast-ssd"  # 使用 SSD 存储类
+# Install the operator
+saola operator create es-operator --type Elasticsearch --version 8.14.3
+
+# Create an instance
+saola middleware create my-elasticsearch --type Elasticsearch --version 8.14.3
+
+# Check status
+saola middleware get my-elasticsearch
 ```
 
-#### 高可用配置
-```yaml
-# 集群配置
-clusterMode: complex  # 混合模式
-masterReplaces: 3    # 3 个 Master 节点
-dataReplaces: 3      # 3 个 Data 节点
-clientReplaces: 2    # 2 个 Client 节点
-coldReplaces: 1      # 1 个 Cold 节点
+## Available Actions
 
-# 端口配置
-esHttpPort: 9200     # HTTP 端口
-esTcpPort: 9300      # TCP 端口
-esKibanaPort: 5200   # Kibana 端口
-esExporterPort: 19114 # 监控端口
-```
+| Action | Description |
+|--------|-------------|
+| datasecurity | Manage data security settings |
 
-#### 监控配置
-```yaml
-# 监控和告警
-monitor:
-  enableAlert: true         # 启用告警
-  enableExporter: true      # 启用指标收集
-  fileLogging: true         # 启用文件日志
-  stdoutLogging: true       # 启用标准输出日志
-```
+## Configuration
 
-### 最佳实践
+Key parameters can be customized via the baseline configuration. See `manifests/*parameters.yaml` for the full parameter reference:
 
-#### 1. 安全配置
-- 使用强密码策略（包含大小写字母、数字和特殊字符）
-- 启用 SSL 连接加密
-- 定期更新数据库密码
-- 配置适当的访问控制规则
-- 启用审计日志记录敏感操作
+- `manifests/clusterparameters.yaml` -- Cluster mode parameters
+- `manifests/complexclusterparameters.yaml` -- Complex cluster mode parameters
+- `manifests/clusteractiveparameters.yaml` -- Active-active cluster parameters
+- `manifests/complexclusteractiveparameters.yaml` -- Active-active complex cluster parameters
 
-#### 2. 性能优化
-- 根据数据量调整 `heap_size` 参数（建议不超过物理内存的 50%）
-- 配置合适的 `number_of_shards` 和 `number_of_replicas`
-- 启用慢查询日志进行性能分析
-- 使用合适的索引模板和映射
-- 优化查询语句和聚合操作
+## Usage Guidance
 
-#### 3. 索引管理
-- 使用索引生命周期管理 (ILM)
-- 设置合适的索引模板
-- 定期清理过期索引
-- 监控索引大小和分片数量
-- 使用别名管理索引
+### Environment Selection
 
-#### 4. 监控告警
-- 监控集群健康状态、节点状态、索引状态
-- 设置关键指标告警阈值
-- 定期检查慢查询日志
-- 监控磁盘使用率和 JVM 内存使用
-- 监控搜索性能和索引性能
+#### Development and Test
+- **Recommended topology**: Operator Standard
+- **Resources**: CPU 1 core, memory 4 Gi, storage 50 Gi
+- **Suggested version**: Elasticsearch 7.16.3
+- **Instances**: 3 Master nodes
 
-#### 5. 运维管理
-- 定期进行集群健康检查
-- 监控集群大小和增长趋势
-- 制定容量规划策略
-- 建立故障处理流程
-- 定期更新 Elasticsearch 版本
+#### Production
+- **Recommended topology**: Complex Cluster
+- **Resources**:
+  - Master: CPU 2+ cores, memory 8+ Gi
+  - Data: CPU 4+ cores, memory 16+ Gi, storage 500+ Gi
+  - Client: CPU 2+ cores, memory 8+ Gi
+- **Suggested version**: Elasticsearch 8.14.3 or 7.17.28
+- **Instances**: 3+ nodes for high availability
 
-### 故障处理
+### Best Practices
 
-#### 常见问题
-1. **集群状态异常**: 检查 Master 节点状态和网络连接
-2. **节点加入失败**: 检查集群发现配置和防火墙设置
-3. **磁盘空间不足**: 清理过期索引或扩容存储
-4. **查询性能慢**: 分析执行计划，优化索引和查询
-5. **内存不足**: 调整 JVM 堆内存大小或增加节点
+#### Security
+- Enforce strong passwords with mixed character classes
+- Enable SSL connection encryption
+- Rotate database credentials periodically
+- Configure appropriate access control rules
+- Enable audit logging for sensitive operations
 
-#### 故障恢复
-1. **Master 节点故障**: 自动选举新的 Master 节点
-2. **Data 节点故障**: 自动从副本恢复数据
-3. **网络分区**: 等待网络恢复或手动干预
-4. **数据损坏**: 从快照恢复或重建索引
+#### Performance Tuning
+- Adjust `heap_size` based on data volume (recommend no more than 50% of physical memory)
+- Configure appropriate `number_of_shards` and `number_of_replicas`
+- Enable slow query logging for performance analysis
+- Use proper index templates and mappings
+- Optimize queries and aggregation operations
 
-### 版本升级
+#### Index Management
+- Use Index Lifecycle Management (ILM)
+- Set appropriate index templates
+- Regularly clean expired indices
+- Monitor index sizes and shard counts
+- Use aliases for index management
 
-#### 升级策略
-- 先在测试环境验证升级流程
-- 制定详细的升级计划和回滚方案
-- 在业务低峰期进行升级
-- 升级后进行全面测试
+#### Monitoring and Alerting
+- Track cluster health status, node status, and index status
+- Define alert thresholds for critical metrics
+- Review slow query logs routinely
+- Monitor disk usage and JVM memory usage
+- Watch search performance and indexing throughput
 
-#### 升级步骤
-1. 备份当前集群数据
-2. 升级 Elasticsearch Operator
-3. 更新数据库版本配置
-4. 执行滚动升级
-5. 验证升级结果
-6. 更新 Kibana 配置（如需要）
+## Related Projects
 
-### 性能调优建议
+| Project | Description |
+|---------|-------------|
+| [OpenSaola Operator](https://github.com/harmonycloud/opensaola) | Core Kubernetes operator for middleware lifecycle management |
+| [saola-cli](https://github.com/harmonycloud/saola-cli) | Command-line tool for middleware management |
+| [PostgreSQL](https://github.com/harmonycloud/postgresql) | PostgreSQL database package |
+| [MySQL](https://github.com/harmonycloud/mysql) | MySQL database package |
+| [Kafka](https://github.com/harmonycloud/kafka) | Apache Kafka streaming platform package |
+| [Redis](https://github.com/harmonycloud/redis) | Redis in-memory data store package |
+| [ZooKeeper](https://github.com/harmonycloud/zookeeper) | Apache ZooKeeper coordination service package |
+| [RabbitMQ](https://github.com/harmonycloud/rabbitmq) | RabbitMQ message broker package |
 
-#### Elasticsearch 参数优化
-```yaml
-# 关键性能参数
-cluster.name: "{{ .Globe.Name }}"
-node.name: "${HOSTNAME}"
-network.host: "0.0.0.0"
-http.port: 9200
-transport.port: 9300
-discovery.seed_hosts: ["es-master-0", "es-master-1", "es-master-2"]
-cluster.initial_master_nodes: ["es-master-0", "es-master-1", "es-master-2"]
-```
+## License
 
-#### JVM 参数优化
-```yaml
-# JVM 堆内存配置
-ES_JAVA_OPTS: "-Xms4g -Xmx4g"
-# GC 优化
-ES_JAVA_OPTS: "-XX:+UseG1GC -XX:MaxGCPauseMillis=200"
-```
-
-#### 索引优化
-```yaml
-# 索引设置
-number_of_shards: 3
-number_of_replicas: 1
-refresh_interval: "30s"
-translog.durability: "async"
-```
-
-### 数据备份策略
-
-#### 快照备份
-```yaml
-# 快照仓库配置
-PUT _snapshot/backup_repo
-{
-  "type": "fs",
-  "settings": {
-    "location": "/data/backup"
-  }
-}
-```
-
-#### 备份计划
-- 每日增量备份
-- 每周全量备份
-- 每月归档备份
-- 测试备份恢复流程
-
----
-
-**注意**: 在生产环境中使用前，请务必在测试环境中充分验证配置和功能。建议定期进行备份测试和故障恢复演练。
+This project is licensed under the [Apache License 2.0](LICENSE).
