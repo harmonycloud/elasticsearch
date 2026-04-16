@@ -1,3 +1,5 @@
+[English](README.md) | [中文](README_zh.md)
+
 # Elasticsearch Search Engine Service
 
 Enterprise-grade Elasticsearch search and analytics service for Kubernetes with distributed clustering, multi-role node architecture, and integrated Kibana visualization.
