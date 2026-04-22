@@ -1,0 +1,66 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareActionBaseline
+metadata:
+  name: elasticsearch-backup-schedule
+  annotations:
+    alias: "Scheduled Backup"
+spec:
+  baselineType: "NormalAction"
+  actionType: "backupSchedule"
+  necessary:
+    handleType: '{"type":"enum","label":"handleType","required":true,"options":"create,update,pause,resume,delete","visible": true}'
+    bucket: '{"type":"string","label":"Bucket Name","required":true,"visible": true}'
+    url: '{"type":"string","label":"MinIO Endpoint","required":true,"visible": true}'
+    userId: '{"type":"string","label":"Access Key (base64)","required":true,"visible": true}'
+    userKey: '{"type":"string","label":"Secret Key (base64)","required":true,"visible": true}'
+    cron: '{"type":"string","label":"Cron Expression","required":true,"visible": true,"placeholder":"0/3 * * * *"}'
+    limitRecord: '{"type":"int","label":"Retention Record Limit","required":true,"visible": true}'
+    retentionTime: '{"type":"int","label":"Retention Time (days)","required":true,"visible": true}'
+  steps:
+    - name: manage-schedule
+      type: "KubectlEdit"
+      cue: |
+        output: {
+          spec: parameters.spec
+        }
+        parameters: {
+          spec: {
+            {{- if ne .Necessary.handleType "delete" }}
+            name: "{{ .Globe.MiddlewareName }}"
+            type: "escluster"
+            {{- if eq .Necessary.handleType "pause" }}
+            pause: "on"
+            {{- else }}
+            pause: "off"
+            {{- end }}
+            schedule: {
+              cron: "{{ .Necessary.cron }}"
+              limitRecord: {{ .Necessary.limitRecord }}
+              retentionTime: {{ .Necessary.retentionTime }}
+            }
+            backupDestination: {
+              destinationType: "minio"
+              parameters: {
+                bucket: "{{ .Necessary.bucket }}"
+                url: "{{ .Necessary.url }}"
+                bucketSubPath: "{{ .Globe.MiddlewareName }}"
+                userId: "{{ .Necessary.userId }}"
+                userKey: "{{ .Necessary.userKey }}"
+              }
+            }
+            {{- end }}
+          }
+          resource: {
+            apiversion: "harmonycloud.cn/v1"
+            kind: "MiddlewareBackupSchedule"
+            name: "{{ .Globe.MiddlewareName }}"
+            namespace: "{{ .Globe.Namespace }}"
+            annotations: {
+              "middlewarebackup.job.mode": "snapshot"
+            }
+          }
+        }
+    - name: delete-schedule
+      cmd:
+        command:
+          - '{{ if ne .Necessary.handleType "delete" }}printf 1{{ else }}kubectl delete middlewarebackupschedule {{ .Globe.MiddlewareName }} -n {{ .Globe.Namespace }}{{ end }}'

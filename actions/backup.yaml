@@ -1,0 +1,46 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareActionBaseline
+metadata:
+  name: elasticsearch-backup
+  annotations:
+    alias: "Backup"
+spec:
+  baselineType: "NormalAction"
+  actionType: "backup"
+  necessary:
+    bucket: '{"type":"string","label":"Bucket Name","required":true,"visible": true}'
+    url: '{"type":"string","label":"MinIO Endpoint","required":true,"visible": true}'
+    userId: '{"type":"string","label":"Access Key","required":true,"visible": true}'
+    userKey: '{"type":"string","label":"Secret Key","required":true,"visible": true}'
+  steps:
+    - name: create-backup
+      type: "KubectlEdit"
+      cue: |
+        output: {
+          spec: parameters.spec
+        }
+        parameters: {
+          spec: {
+            name: "{{ .Globe.MiddlewareName }}"
+            type: "escluster"
+            backupDestination: {
+              destinationType: "minio"
+              parameters: {
+                bucket: "{{ .Necessary.bucket }}"
+                url: "{{ .Necessary.url }}"
+                bucketSubPath: "{{ .Globe.MiddlewareName }}"
+                userId: "{{ .Necessary.userId }}"
+                userKey: "{{ .Necessary.userKey }}"
+              }
+            }
+          }
+          resource: {
+            apiversion: "harmonycloud.cn/v1"
+            kind: "MiddlewareBackup"
+            name: "{{ .Globe.MiddlewareName }}-backup-{{ now | date \"20060102150405\" }}"
+            namespace: "{{ .Globe.Namespace }}"
+            annotations: {
+              "middlewarebackup.job.mode": "snapshot"
+            }
+          }
+        }

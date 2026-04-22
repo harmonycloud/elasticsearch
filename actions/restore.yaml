@@ -1,0 +1,49 @@
+apiVersion: middleware.cn/v1
+kind: MiddlewareActionBaseline
+metadata:
+  name: elasticsearch-restore
+  annotations:
+    alias: "Restore"
+spec:
+  baselineType: "NormalAction"
+  actionType: "restore"
+  necessary:
+    backupName: '{"type":"string","label":"Source Backup Name","required":true,"visible": true}'
+    sourceBucketSubPath: '{"type":"string","label":"Source Cluster SubPath","required":true,"visible": true}'
+    bucket: '{"type":"string","label":"Bucket Name","required":true,"visible": true}'
+    url: '{"type":"string","label":"MinIO Endpoint","required":true,"visible": true}'
+    userId: '{"type":"string","label":"Access Key","required":true,"visible": true}'
+    userKey: '{"type":"string","label":"Secret Key","required":true,"visible": true}'
+  steps:
+    - name: create-restore
+      type: "KubectlEdit"
+      cue: |
+        output: {
+          spec: parameters.spec
+        }
+        parameters: {
+          spec: {
+            name: "{{ .Globe.MiddlewareName }}"
+            type: "escluster"
+            backupName: "{{ .Necessary.backupName }}"
+            backupDestination: {
+              destinationType: "minio"
+              parameters: {
+                bucket: "{{ .Necessary.bucket }}"
+                url: "{{ .Necessary.url }}"
+                bucketSubPath: "{{ .Necessary.sourceBucketSubPath }}"
+                userId: "{{ .Necessary.userId }}"
+                userKey: "{{ .Necessary.userKey }}"
+              }
+            }
+          }
+          resource: {
+            apiversion: "harmonycloud.cn/v1"
+            kind: "MiddlewareRestore"
+            name: "{{ .Globe.MiddlewareName }}-restore-{{ now | date \"20060102150405\" }}"
+            namespace: "{{ .Globe.Namespace }}"
+            annotations: {
+              "middlewarebackup.job.mode": "snapshot"
+            }
+          }
+        }
