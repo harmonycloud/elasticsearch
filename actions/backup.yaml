@@ -8,10 +8,14 @@ spec:
   baselineType: "NormalAction"
   actionType: "backup"
   necessary:
+    # Resource name (metadata.name) provided by the caller
+    # 资源名 (metadata.name) 由调用方传入
+    name: '{"type":"string","label":"Resource Name","required":true,"visible": true}'
     bucket: '{"type":"string","label":"Bucket Name","required":true,"visible": true}'
     url: '{"type":"string","label":"MinIO Endpoint","required":true,"visible": true}'
-    userId: '{"type":"string","label":"Access Key","required":true,"visible": true}'
-    userKey: '{"type":"string","label":"Secret Key","required":true,"visible": true}'
+    userId: '{"type":"string","label":"Access Key (base64)","required":true,"visible": true}'
+    userKey: '{"type":"string","label":"Secret Key (base64)","required":true,"visible": true}'
+    annotations: '{"type":"string","label":"Additional Annotations (JSON map)","required":false,"visible": true}'
   steps:
     - name: create-backup
       type: "KubectlEdit"
@@ -37,10 +41,13 @@ spec:
           resource: {
             apiversion: "harmonycloud.cn/v1"
             kind: "MiddlewareBackup"
-            name: "{{ .Globe.MiddlewareName }}-backup-{{ now | date `20060102150405` }}"
+            name: "{{ .Necessary.name }}"
             namespace: "{{ .Globe.Namespace }}"
             annotations: {
               "middlewarebackup.job.mode": "snapshot"
+              {{- if .Necessary.annotations }}
+              {{ .Necessary.annotations }}
+              {{- end }}
             }
           }
         }
