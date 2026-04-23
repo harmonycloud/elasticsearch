@@ -37,7 +37,7 @@ spec:
           resource: {
             apiversion: "harmonycloud.cn/v1"
             kind: "MiddlewareBackup"
-            name: "{{ .Globe.MiddlewareName }}-backup-{{ now | date \"20060102150405\" }}"
+            name: "{{ .Globe.MiddlewareName }}-backup-{{ now | date `20060102150405` }}"
             namespace: "{{ .Globe.Namespace }}"
             annotations: {
               "middlewarebackup.job.mode": "snapshot"
