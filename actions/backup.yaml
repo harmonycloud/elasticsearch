@@ -45,8 +45,8 @@ spec:
             namespace: "{{ .Globe.Namespace }}"
             annotations: {
               "middlewarebackup.job.mode": "snapshot"
-              {{- if .Necessary.annotations }}
-              {{ .Necessary.annotations }}
+              {{- range $k, $v := .Necessary.annotations }}
+              {{ printf "%q" $k }}: {{ printf "%q" $v }}
               {{- end }}
             }
           }
