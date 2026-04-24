@@ -16,6 +16,7 @@ spec:
     userId: '{"type":"string","label":"Access Key (base64)","required":true,"visible": true}'
     userKey: '{"type":"string","label":"Secret Key (base64)","required":true,"visible": true}'
     annotations: '{"type":"string","label":"Additional Annotations (JSON map)","required":false,"visible": true}'
+    labels: '{"type":"string","label":"Additional labels (JSON map)","required":false,"visible": true}'
   steps:
     - name: create-backup
       type: "KubectlEdit"
@@ -46,6 +47,11 @@ spec:
             annotations: {
               "middlewarebackup.job.mode": "snapshot"
               {{- range $k, $v := .Necessary.annotations }}
+              {{ printf "%q" $k }}: {{ printf "%q" $v }}
+              {{- end }}
+            }
+            labels: {
+              {{- range $k, $v := .Necessary.labels }}
               {{ printf "%q" $k }}: {{ printf "%q" $v }}
               {{- end }}
             }

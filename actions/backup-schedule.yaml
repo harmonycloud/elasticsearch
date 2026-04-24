@@ -24,6 +24,7 @@ spec:
     # operationType 作为 OPERATION_TYPE 环境变量注入到 spec.customBackups
     operationType: '{"type":"string","label":"Operation Type (mapped to env OPERATION_TYPE)","required":true,"visible": true}'
     annotations: '{"type":"string","label":"Additional Annotations (JSON map)","required":false,"visible": true}'
+    labels: '{"type":"string","label":"Additional labels (JSON map)","required":false,"visible": true}'
   steps:
     - name: manage-schedule
       type: "KubectlEdit"
@@ -72,6 +73,11 @@ spec:
             annotations: {
               "middlewarebackup.job.mode": "snapshot"
               {{- range $k, $v := .Necessary.annotations }}
+              {{ printf "%q" $k }}: {{ printf "%q" $v }}
+              {{- end }}
+            }
+            labels: {
+              {{- range $k, $v := .Necessary.labels }}
               {{ printf "%q" $k }}: {{ printf "%q" $v }}
               {{- end }}
             }
