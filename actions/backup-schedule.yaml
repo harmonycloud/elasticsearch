@@ -65,7 +65,7 @@ spec:
             {{- end }}
           }
           resource: {
-            apiversion: "harmonycloud.cn/v1"
+            apiVersion: "harmonycloud.cn/v1"
             kind: "MiddlewareBackupSchedule"
             name: "{{ .Necessary.name }}"
             namespace: "{{ .Globe.Namespace }}"
