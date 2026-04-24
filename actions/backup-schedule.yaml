@@ -11,9 +11,6 @@ spec:
     # Resource name (metadata.name) provided by the caller
     # 资源名 (metadata.name) 由调用方传入
     name: '{"type":"string","label":"Resource Name","required":true,"visible": true}'
-    # handleType controls pause/resume/delete branches in the cue template below
-    # handleType 用于控制下方 cue 模板中的 pause/resume/delete 分支
-    handleType: '{"type":"enum","label":"handleType","required":true,"options":"create,update,pause,resume,delete","visible": true}'
     bucket: '{"type":"string","label":"Bucket Name","required":true,"visible": true}'
     url: '{"type":"string","label":"MinIO Endpoint","required":true,"visible": true}'
     userId: '{"type":"string","label":"Access Key (base64)","required":true,"visible": true}'
@@ -34,14 +31,9 @@ spec:
         }
         parameters: {
           spec: {
-            {{- if ne .Necessary.handleType "delete" }}
             name: "{{ .Globe.MiddlewareName }}"
             type: "escluster"
-            {{- if eq .Necessary.handleType "pause" }}
-            pause: "on"
-            {{- else }}
             pause: "off"
-            {{- end }}
             schedule: {
               cron: "{{ .Necessary.cron }}"
               limitRecord: 5
@@ -63,7 +55,6 @@ spec:
                 value: "{{ .Necessary.operationType }}"
               }]
             }]
-            {{- end }}
           }
           resource: {
             apiversion: "harmonycloud.cn/v1"
@@ -83,7 +74,3 @@ spec:
             }
           }
         }
-    - name: delete-schedule
-      cmd:
-        command:
-          - '{{ if ne .Necessary.handleType "delete" }}printf 1{{ else }}kubectl delete middlewarebackupschedule {{ .Necessary.name }} -n {{ .Globe.Namespace }}{{ end }}'
