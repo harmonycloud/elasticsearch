@@ -55,7 +55,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"1"}'
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4"}'
-        replicas: '{"type":"int","label":"Replicas","required":true,"description":"Please enter the number of instances","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter the number of instances"}'
+        replicas: '{"type":"int","label":"Instances","required":true,"description":"Please enter the number of instances","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter the number of instances"}'
         volume:
           size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please select storage"}'
@@ -66,7 +66,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"1"}'
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4"}'
-        replicas: '{"type":"int","label":"Replicas","required":true,"description":"Please enter the number of instances","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter the number of instances"}'
+        replicas: '{"type":"int","label":"Instances","required":true,"description":"Please enter the number of instances","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter the number of instances"}'
         volume:
           size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please select storage"}'
@@ -77,7 +77,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"1"}'
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4"}'
-        replicas: '{"type":"int","label":"Replicas","required":true,"description":"Please enter an number of instances greater than or equal to 3.","default":3,"pattern":"^([3-9]|[1-9]\\d+)$","placeholder":"Please enter an number of instances greater than or equal to 3.","min":"3"}'
+        replicas: '{"type":"int","label":"Instances","required":true,"description":"Please enter an number of instances greater than or equal to 3.","default":3,"pattern":"^([3-9]|[1-9]\\d+)$","placeholder":"Please enter an number of instances greater than or equal to 3.","min":"3"}'
         volume:
           size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please select storage"}'
@@ -88,7 +88,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"0.5"}'
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"1"}'
-        replicas: '{"type":"int","label":"Replicas","required":true,"description":"Please enter the number of instances","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter the number of instances"}'
+        replicas: '{"type":"int","label":"Instances","required":true,"description":"Please enter the number of instances","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter the number of instances"}'
       master:
         limits:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"1"}'
@@ -96,7 +96,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"1"}'
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4"}'
-        replicas: '{"type":"int","label":"Replicas","required":true,"description":"Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7).","default":3,"pattern":"^([3579]|[1-9][0-9]*[13579])$","placeholder":"Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7).","min":"3"}'
+        replicas: '{"type":"int","label":"Instances","required":true,"description":"Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7).","default":3,"pattern":"^([3579]|[1-9][0-9]*[13579])$","placeholder":"Please enter an odd number of instances greater than or equal to 3 (e.g., 3, 5, or 7).","min":"3"}'
         volume:
           size: '{"type":"int","label":"StorageSize","required":true,"pattern":"^(?!0$)(?!0\\d)\\d+(\\.\\d)?$","placeholder":"Please enter the storage size"}'
           storageClass: '{"type":"storageClass","label":"StorageClass","required":true,"description":"Please select storage","placeholder":"Please select storage"}'

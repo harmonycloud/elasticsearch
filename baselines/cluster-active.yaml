@@ -56,7 +56,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"1","min":"0.1"}'
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"4","min":"0.1"}'
-        replicas: '{"type":"int","label":"Replicas","required":true,"description":"Number of nodes, please enter an odd number greater than or equal to 3","default":3,"pattern":"^(3|5|7|9|[1-9]\\d*[13579])$","placeholder":"Please enter Instances","min":"3"}'
+        replicas: '{"type":"int","label":"Instances","required":true,"description":"Number of nodes, please enter an odd number greater than or equal to 3","default":3,"pattern":"^(3|5|7|9|[1-9]\\d*[13579])$","placeholder":"Please enter Instances","min":"3"}'
         volumes: ""
   preActions:
     - name: pre-elasticsearch-alertrule-labels
