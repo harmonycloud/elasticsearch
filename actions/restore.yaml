@@ -22,7 +22,6 @@ spec:
           spec: {
             name: "{{ .Globe.MiddlewareName }}"
             type: "escluster"
-            backupName: "{{ .Globe.MiddlewareName }}"
             customRestores: {{ toJson .Necessary.customRestores }}
           }
           resource: {
