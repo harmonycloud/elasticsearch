@@ -8,12 +8,9 @@ spec:
   baselineType: "NormalAction"
   actionType: "restore"
   necessary:
-    backupName: '{"type":"string","label":"Source Backup Name","required":true,"visible": true}'
-    sourceBucketSubPath: '{"type":"string","label":"Source Cluster SubPath","required":true,"visible": true}'
-    bucket: '{"type":"string","label":"Bucket Name","required":true,"visible": true}'
-    url: '{"type":"string","label":"MinIO Endpoint","required":true,"visible": true}'
-    userId: '{"type":"string","label":"Access Key","required":true,"visible": true}'
-    userKey: '{"type":"string","label":"Secret Key","required":true,"visible": true}'
+    annotations: '{"type":"string","label":"Additional Annotations (JSON map)","required":false,"visible": true}'
+    labels: '{"type":"string","label":"Additional labels (JSON map)","required":false,"visible": true}'
+    customRestores: {}
   steps:
     - name: create-restore
       type: "KubectlEdit"
@@ -25,17 +22,8 @@ spec:
           spec: {
             name: "{{ .Globe.MiddlewareName }}"
             type: "escluster"
-            backupName: "{{ .Necessary.backupName }}"
-            backupDestination: {
-              destinationType: "minio"
-              parameters: {
-                bucket: "{{ .Necessary.bucket }}"
-                url: "{{ .Necessary.url }}"
-                bucketSubPath: "{{ .Necessary.sourceBucketSubPath }}"
-                userId: "{{ .Necessary.userId }}"
-                userKey: "{{ .Necessary.userKey }}"
-              }
-            }
+            backupName: "{{ .Globe.MiddlewareName }}"
+            customRestores: {{ toJson .Necessary.customRestores }}
           }
           resource: {
             apiversion: "harmonycloud.cn/v1"
@@ -44,6 +32,14 @@ spec:
             namespace: "{{ .Globe.Namespace }}"
             annotations: {
               "middlewarebackup.job.mode": "snapshot"
+              {{- range $k, $v := .Necessary.annotations }}
+              {{ printf "%q" $k }}: {{ printf "%q" $v }}
+              {{- end }}
+            }
+            labels: {
+              {{- range $k, $v := .Necessary.labels }}
+              {{ printf "%q" $k }}: {{ printf "%q" $v }}
+              {{- end }}
             }
           }
         }
