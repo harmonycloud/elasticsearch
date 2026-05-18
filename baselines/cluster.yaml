@@ -129,7 +129,7 @@ spec:
           coldSize: 5Gi
           masterSize: "{{ .Necessary.resource.master.volume.size }}"
           masterClass: "{{ .Necessary.resource.master.volume.storageClass }}"
-        middlewareImage: '{{ .Necessary.repository }}/elastic:{{ if contains "6.8" .Necessary.version }}6.8.22-466e79{{ else if eq "7.16.2" .Necessary.version }}7.16.2-6e67c5{{ else if eq "7.16.3" .Necessary.version }}7.16.3-6e67c5{{ else if eq "7.17.28" .Necessary.version }}7.17.28-6e67c53e{{ else if eq "8.11.3" .Necessary.version }}8.11.3-466e79{{ else if eq "8.13.4" .Necessary.version }}8.13.4-466e79{{ else }}8.14.3-35f41674{{ end }}'
+        middlewareImage: '{{ .Necessary.repository }}/elastic:{{ if contains "6.8" .Necessary.version }}6.8.22-466e79{{ else if eq "7.16.2" .Necessary.version }}7.16.2-5bbc5{{ else if eq "7.16.3" .Necessary.version }}7.16.3-5bbc5{{ else if eq "7.17.28" .Necessary.version }}7.17.28-5bbc5{{ else if eq "8.11.3" .Necessary.version }}8.11.3-556f5c{{ else if eq "8.13.4" .Necessary.version }}8.13.4-3d6949{{ else }}8.14.3-556f5c{{ end }}'
         monitorImage: "{{ .Necessary.repository }}/es-exporter:v1.6.0"
         hostNetwork: false
         resources:
