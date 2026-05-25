@@ -195,9 +195,10 @@ spec:
         spec:
           containers:
             - name: elasticsearch-operator
-              image: '{{ if ne .Globe.repository "" }}{{ .Globe.repository }}/{{ end }}{{ .Globe.project }}/operator-manager:v1.12.0'
+              image: '{{ if ne .Globe.repository "" }}{{ .Globe.repository }}/{{ end }}{{ .Globe.project }}/operator-manager:017fa'
               args:
                 - -leader-elect=true
+                - --leader-election-namespace={{ .Globe.Namespace }}
               imagePullPolicy: IfNotPresent
               env:
                 - name: TZ

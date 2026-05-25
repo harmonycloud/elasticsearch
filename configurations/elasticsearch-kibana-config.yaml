@@ -14,7 +14,7 @@ spec:
       {{- else }}
         elasticsearch.hosts: ["http://elasticsearch:{{ .Values.port.esHttpPort }}"]
       {{- end }}
-      {{- if not (regexMatch "^8\\..*" .Values.version) }}
+      {{- if not (regexMatch "^(8|9)\\..*" .Values.version) }}
         server.host: "0"
         elasticsearch.username: elastic
       {{- if .Values.encodePassword }}
@@ -29,6 +29,9 @@ spec:
         server.defaultRoute: /app/monitoring
         xpack.monitoring.ui.container.elasticsearch.enabled: false
         i18n.locale: "zh-CN"
+      {{- if regexMatch "^(8|9)\\..*" .Values.version }}
+        xpack.encryptedSavedObjects.encryptionKey: "pYJ9V4JZ8yq0kX2e7m6dQv4WZK8JbC0c3sZzLQ=="
+      {{- end }}
     kind: ConfigMap
     metadata:
       labels:

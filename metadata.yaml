@@ -1,12 +1,9 @@
 name: Elasticsearch # 中间件类型
-version: 1.12.1-1.0.1 # 包版本
+version: 1.14.0-beta.2-1.0.0 # 包版本
 app:
   version: # 中间件支持版本
-    - "8.14.3"
-    - "7.17.28"
-    - "7.16.2"
-    - "7.16.3"
-    - "6.8.22"
+    - "8.19.9"
+    - "9.2.3"
 owner: HarmonyCloud # 供应商
 type: db # 类型
 chartType: Elasticsearch
@@ -26,3 +23,13 @@ changes: |
   1.12.1-1.0.1
     2026.04.13: 修改集群模式实例数校验规则
     2026.04.13: 修改混合模式各节点实例数校验规则
+  1.14.0-beta.2-1.0.0
+    2026.05.25: 升级到 elasticsearch chart 1.14.0-beta.2
+    2026.05.25: 支持版本收敛至 8.19.9 / 9.2.3，弃用 6.x/7.x/8.11/8.13/8.14（已存在实例仍可在 8.14.x → 8.19.x 同主版本升级）
+    2026.05.25: ES Operator 镜像升级至 017fa（appVersion 1.14.0），新增 --leader-election-namespace 参数
+    2026.05.25: 集群支持 suspended（缩容到 0）字段（#295329）
+    2026.05.25: exporter.replicas 可修改（#288718）
+    2026.05.25: 健康检查脚本新增 --connect-timeout / --max-time（#275002）
+    2026.05.25: kibana 配置注入 xpack.encryptedSavedObjects.encryptionKey（8.x/9.x）
+    2026.05.25: ES / Kibana 配置版本判断从 ^8\. 扩展到 ^(8|9)\.
+    2026.05.25: parameters.version 改为直传 .Necessary.version，修正旧版本被强制映射的问题

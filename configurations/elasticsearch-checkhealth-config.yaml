@@ -8,8 +8,12 @@ spec:
     data:
       checkHealth.sh: |
         #!/usr/bin/env bash
-        statusCode=`curl -I -o /dev/null -s -w %{http_code}  -u elastic:{{ .Values.elasticPassword | quote}}  ${PODIP}:{{ .Values.port.esHttpPort }}`
-        if [[ ${statusCode} == 503 || ${statusCode} == 200 || ${statusCode} == 401 ]];then
+        statusCode="$(curl -I -o /dev/null -s -w '%{http_code}' \
+          --connect-timeout {{ default 3 .Values.healthCheck.curlConnectTimeoutSeconds }} \
+          --max-time {{ default 18 .Values.healthCheck.curlMaxTimeSeconds }} \
+          -u elastic:{{ .Values.elasticPassword | quote }} \
+          ${PODIP}:{{ .Values.port.esHttpPort }} || true)"
+        if [[ "${statusCode}" == "503" || "${statusCode}" == "200" || "${statusCode}" == "401" ]];then
             exit 0
         else
             exit 1

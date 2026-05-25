@@ -19,7 +19,7 @@ spec:
         network.host: {PodIP}
         network.publish_host: {PodIP}
         http.port: {{ .Values.port.esHttpPort }}
-        {{- if not (regexMatch "^8\\..*" .Values.version) }}
+        {{- if not (regexMatch "^(8|9)\\..*" .Values.version) }}
         transport.tcp.port: {{ .Values.port.esTcpPort }}
         {{- else }}
         transport.port: {{ .Values.port.esTcpPort }}
@@ -44,7 +44,7 @@ spec:
         path.repo: {PathRepo}
         xpack.security.transport.ssl.keystore.path: {CONFIG_PATH}/elastic-certificates.p12
         xpack.security.transport.ssl.truststore.path: {CONFIG_PATH}/elastic-certificates.p12
-        {{- if not (regexMatch "^8\\..*" .Values.version) }}
+        {{- if not (regexMatch "^(8|9)\\..*" .Values.version) }}
         discovery.zen.minimum_master_nodes: {minimum_master_nodes}
         {{- end }}
         xpack.security.transport.ssl.enabled: true
