@@ -70,12 +70,17 @@ spec:
       exposed: true
     - name: pre-elasticsearch-tolerations
       parameters:
-        tolerations: []
+        tolerations:
+          - effect: NoSchedule
+            key: harm.cn/type
+            operator: Equal
+            value: active-active
       exposed: true
     - name: pre-elasticsearch-affinity
       parameters:
-        podAntiAffinityTopologKey: "kubernetes.io/hostname"
-        podAntiAffinity: "soft"
+        podAntiAffinityTopologKey: "topology.kubernetes.io/zone"
+        podAntiAffinity: "hard"
+        disableHostnameTopologySpread: true
         nodeAffinity: {}
         activeActive: true
       exposed: true
@@ -122,8 +127,8 @@ spec:
           - name: PathRepo
             value: /data/elastic/{ClusterName}/{PodName}/data/data_back
         initImage: "{{ .Necessary.repository }}/es-init:v1.8.0-init"
-        podAntiAffinityTopologKey: kubernetes.io/hostname
-        podAntiAffinity: soft
+        podAntiAffinityTopologKey: topology.kubernetes.io/zone
+        podAntiAffinity: hard
         storage:
           dataSize: 5Gi
           clientSize: 5Gi
