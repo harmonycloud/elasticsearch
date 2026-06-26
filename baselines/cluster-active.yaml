@@ -80,7 +80,7 @@ spec:
       parameters:
         podAntiAffinityTopologKey: "topology.kubernetes.io/zone"
         podAntiAffinity: "hard"
-        disableHostnameTopologySpread: true
+        disableHostnameTopologySpread: false
         nodeAffinity: {}
         activeActive: true
       exposed: true
