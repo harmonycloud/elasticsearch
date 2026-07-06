@@ -42,6 +42,8 @@ description:
     name-zh: "请输入大于等于3的实例数"
   - name: "Number of nodes, please enter an odd number greater than or equal to 3"
     name-zh: "节点数量，请输入3或3以上的奇数"
+  - name: "The minimum value for kibana count is 1"
+    name-zh: "Kibana节点数量最小值为1"
 
   - name: "Please enter the storage size"
     name-zh: "请输入存储大小"
