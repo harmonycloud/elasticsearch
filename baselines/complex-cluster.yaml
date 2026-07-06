@@ -88,7 +88,7 @@ spec:
         requests:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"0.5"}'
           memory: '{"type":"string","label":"Memory","required":true,"description":"Please enter a custom quota, the unit is `Gi`","placeholder":"Please enter a custom quota, the unit is `Gi`","default":"1"}'
-        replicas: '{"type":"int","label":"Instances","required":true,"description":"The minimum value for kibana count is 1","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter Instances"}'
+        replicas: '{"type":"int","label":"Instances","required":true,"description":"Number of nodes, please enter an integer greater than or equal to 1","default":1,"pattern":"^[1-9]\\d*$","placeholder":"Please enter Instances"}'
       master:
         limits:
           cpu: '{"type":"string","label":"CPU","required":true,"description":"Please enter a custom quota, the unit is `Core`","placeholder":"Please enter a custom quota, the unit is `Core`","default":"1"}'
