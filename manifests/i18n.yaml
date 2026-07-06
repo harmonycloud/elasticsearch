@@ -61,13 +61,13 @@ description:
 
 
   - name: "Number of master nodes, please enter an odd number greater than or equal to 3"
-    name-zh: "master节点数量，请输入3或3以上的奇数"
+    name-zh: "主节点数量，请输入3或3以上的奇数"
   - name: "Number of cold nodes, please enter an even number greater than or equal to 2"
-    name-zh: "cold节点数量，请输入2或2以上的偶数"
+    name-zh: "冷节点数量，请输入2或2以上的偶数"
   - name: "Number of Coordinator nodes, please enter an even number greater than or equal to 2"
-    name-zh: "Coordinator节点数量，请输入2或2以上的偶数"
+    name-zh: "协调节点数量，请输入2或2以上的偶数"
   - name: "Number of data nodes, please enter an even number greater than or equal to 4"
-    name-zh: "data节点数量，请输入4或4以上的偶数"
+    name-zh: "数据节点数量，请输入4或4以上的偶数"
 
   - name: "Through custom queue size, adjust the queue size for document writing"
     name-zh: "通过自定义queue大小，调整文档写入的队列大小"
@@ -128,10 +128,6 @@ label:
     name-zh: "负载均衡控制器名称"
   - name: "Load Balancer Address"
     name-zh: "负载均衡地址"
-  - name: "Redis Node Port"
-    name-zh: "Redis节点端口"
-  - name: "Redis Bus Port"
-    name-zh: "Redis总线端口"
   - name: "protocol"
     name-zh: "协议"
   - name: "Deployment Method"
