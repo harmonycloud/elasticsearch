@@ -70,11 +70,7 @@ spec:
       exposed: true
     - name: pre-elasticsearch-tolerations
       parameters:
-        tolerations:
-          - effect: NoSchedule
-            key: harm.cn/type
-            operator: Equal
-            value: active-active
+        tolerations: []
       exposed: true
     - name: pre-elasticsearch-affinity
       parameters:
