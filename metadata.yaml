@@ -1,5 +1,5 @@
 name: Elasticsearch # 中间件类型
-version: 1.14.0-beta.2-1.0.0 # 包版本
+version: 1.14.0-beta.3-1.0.0 # 包版本
 app:
   version: # 中间件支持版本
     - "8.19.9"
@@ -9,6 +9,9 @@ type: db # 类型
 chartType: Elasticsearch
 description: Elasticsearch Database # 描述
 changes: |
+  1.14.0-beta.3-1.0.0
+    2026.07.13: 升级到 elasticsearch chart 1.14.0-beta.3
+    2026.07.13: 同步 Elasticsearch 时区修复镜像（#298518）
   1.11.0-1.4.0
     2025.10.14: 修改双活模式命名
     2025.10.16: operator默认推荐资源规格
