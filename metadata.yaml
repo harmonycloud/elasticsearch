@@ -9,9 +9,6 @@ type: db # 类型
 chartType: Elasticsearch
 description: Elasticsearch Database # 描述
 changes: |
-  1.14.0-beta.3-1.0.0
-    2026.07.13: 升级到 elasticsearch chart 1.14.0-beta.3
-    2026.07.13: 同步 Elasticsearch 时区修复镜像（#298518）
   1.11.0-1.4.0
     2025.10.14: 修改双活模式命名
     2025.10.16: operator默认推荐资源规格
@@ -40,3 +37,6 @@ changes: |
     2026.05.25: kibana 配置注入 xpack.encryptedSavedObjects.encryptionKey（8.x/9.x）
     2026.05.25: ES / Kibana 配置版本判断从 ^8\. 扩展到 ^(8|9)\.
     2026.05.25: parameters.version 改为直传 .Necessary.version，修正旧版本被强制映射的问题
+  1.14.0-beta.3-1.0.0
+    2026.07.13: 升级到 elasticsearch chart 1.14.0-beta.3
+    2026.07.13: 同步 Elasticsearch 时区修复镜像（#298518）
